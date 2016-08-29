@@ -33,6 +33,7 @@ try {
   } 
 catch (IOException e) {}
 ```
+(Example from [stackoverflow](http://stackoverflow.com/questions/12692103/read-logcat-programmatically-within-application))
 
 ## Monitoring Network Traffic
 Track the network stats of the UID for the game. This includes packet counts and data counts, done with the [TrafficStats class](https://developer.android.com/reference/android/net/TrafficStats.html). [Example of this being used](http://stackoverflow.com/questions/17674790/how-do-i-programmatically-show-data-usage-of-all-applications).
