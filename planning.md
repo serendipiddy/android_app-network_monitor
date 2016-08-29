@@ -37,3 +37,4 @@ catch (IOException e) {}
 ## Monitoring Network Traffic
 Track the network stats of the UID for the game. This includes packet counts and data counts, done with the [TrafficStats class](https://developer.android.com/reference/android/net/TrafficStats.html). [Example of this being used](http://stackoverflow.com/questions/17674790/how-do-i-programmatically-show-data-usage-of-all-applications).
 
+[An article about something similar](http://agolovatyuk.blogspot.co.nz/2012/04/android-traffic-statistics-inside.html).
