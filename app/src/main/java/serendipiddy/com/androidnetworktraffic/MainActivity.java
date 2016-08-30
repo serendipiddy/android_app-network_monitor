@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +39,18 @@ public class MainActivity extends AppCompatActivity {
         PackageArrayAdapter adapter = new PackageArrayAdapter(this,  R.layout.application_text, applications);
         ListView applicationListView = (ListView) findViewById(R.id.applicationListView);
         applicationListView.setAdapter(adapter);
+        applicationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
+                Toast.makeText(getBaseContext(), ai.uid+"", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
+    private void showUID(){
+
     }
 
     /**
