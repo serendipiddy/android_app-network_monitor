@@ -9,7 +9,7 @@ Read the network traffic and events from the game from logcat, matching network 
 
 Android API methods that might be useful:
 
-* android.pm.PackageManager:
+* android.content.pm.PackageManager:
 	* [getPackageInfo()](https://developer.android.com/reference/android/content/pm/PackageManager.html#getPackageInfo(java.lang.String, int))
 	* [getApplicationInfo()](https://developer.android.com/reference/android/content/pm/PackageManager.html#getApplicationInfo(java.lang.String, int))
 	* [getInstalledApplications()](https://developer.android.com/reference/android/content/pm/PackageManager.html#getInstalledApplications(int))
