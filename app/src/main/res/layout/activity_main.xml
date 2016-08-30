@@ -9,12 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="serendipiddy.com.androidnetworktraffic.MainActivity">
 
-    <TextView
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/applicationTextView"
+        android:id="@+id/applicationListView"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
