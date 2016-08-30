@@ -48,6 +48,7 @@ Information about the remote IP might be useful too. Not sure if it will be poss
 * Create empty app in android studio
 * Implement each of the tasks in their own activity
     * List installed packages and their UID.
+        * [Using a listview](https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView)
     * Capture logcat output to screen, filter by a user defined UID
     * Display the network usage of a UID in terms of number of Bytes and number of packets. Create a list of *time_interval:packets:bytes*.
 * Think about how to interleave the log events and network events, making both a useful visual and an exportable file.
