@@ -22,7 +22,6 @@
         <service
             android:name=".NetworkUsageQueryServiceIntent"
             android:exported="false"></service>
-        <receiver android:name=".NetworkStatsAlarm" />
     </application>
 
 </manifest>

@@ -86,8 +86,10 @@ public class TrafficStatsActivity extends AppCompatActivity {
         int uid = intent.getIntExtra(MainActivity.EXTRA_UID, -2);
 
         // START THE SERVICE
-        new NetworkStatsAlarm().setAlarm(view.getContext(),title, new Integer(uid).toString());
-//        NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), intent);
+        NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), title, new Integer(uid).toString());
+
+
+//        new NetworkStatsAlarm().setAlarm(view.getContext(),title, new Integer(uid).toString());
     }
 
 
