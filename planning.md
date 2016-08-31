@@ -57,6 +57,7 @@ Reading has suggested the best way would be to run the monitor as a bg service, 
 * [Running a repeated bg task](http://stackoverflow.com/questions/5773998/running-a-repeating-task-in-background-on-a-real-time-application)
 * [Polling a webserver](http://stackoverflow.com/questions/9226927/how-to-poll-a-webservice-at-finite-interval-from-android)
 * [Android API Timer](https://developer.android.com/reference/java/util/Timer.html)
+* [Alarm example](http://stackoverflow.com/questions/4459058/alarm-manager-example)
 
 So, in terms of implementation the service intent will perform a read of the bytes and packets and store this on the phone with a timestamp.
 This will be called from an Alarm.

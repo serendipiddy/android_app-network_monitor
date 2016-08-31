@@ -4,12 +4,9 @@ import android.content.Intent;
 import android.net.TrafficStats;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class TrafficStatsActivity extends AppCompatActivity {
 
@@ -38,28 +35,24 @@ public class TrafficStatsActivity extends AppCompatActivity {
         Long timestamp = System.currentTimeMillis() / 1000L;
 
         TextView textTitle = (TextView) findViewById(R.id.netStats_title);
-        TextView textRxBytes = (TextView) findViewById(R.id.netStats_rxBytes);
-        TextView textTxBytes = (TextView) findViewById(R.id.netStats_txBytes);
-        TextView textRxPkts = (TextView) findViewById(R.id.netStats_rxPkts);
-        TextView textTxPkts = (TextView) findViewById(R.id.netStats_txPkts);
+        TextView textRxBytes = (TextView) findViewById(R.id.netStats_rx);
+        TextView textTxBytes = (TextView) findViewById(R.id.netStats_tx);
 
-        textTitle.setText(title+"\n("+count+")");
-        textRxBytes.setText("Received "+rxBytes.toString()+"B");
-        textTxBytes.setText("Sent "+txBytes.toString()+"B");
-        textRxPkts.setText("Recieved "+rxPackets.toString()+" packets");
-        textTxPkts.setText("Sent "+txPackets.toString()+" packets");
+        textTitle.setText(title); // +"\n("+count+")");
+        textRxBytes.setText("Rx "+rxBytes.toString()+"B "+rxPackets.toString()+"pkt");
+        textTxBytes.setText("Tx "+txBytes.toString()+"B "+txPackets.toString()+"pkt");
 
-        try {
-            FileOutputStream fout = openFileOutput("usage_"+title+".csv", MODE_APPEND);
-            String output = timestamp+","+rxBytes+","+txBytes+","+rxPackets+","+txPackets+"\n";
-            fout.write(output.getBytes());
-        }
-        catch (FileNotFoundException e) {
-            Log.e("error","Could not find file usage_"+title);
-        }
-        catch (IOException e) {
-            Log.e("error","Could not write to file usage_"+title);
-        }
+//        try {
+//            FileOutputStream fout = openFileOutput("usage_"+title+".csv", MODE_APPEND);
+//            String output = timestamp+","+rxBytes+","+txBytes+","+rxPackets+","+txPackets+"\n";
+//            fout.write(output.getBytes());
+//        }
+//        catch (FileNotFoundException e) {
+//            Log.e("error","Could not find file usage_"+title);
+//        }
+//        catch (IOException e) {
+//            Log.e("error","Could not write to file usage_"+title);
+//        }
     }
 
     private void showUsingTrafficStats(String title, int uid, int count) {
@@ -70,15 +63,26 @@ public class TrafficStatsActivity extends AppCompatActivity {
         Long  txPackets = ts.getUidTxPackets(uid);
 
         TextView textTitle = (TextView) findViewById(R.id.netStats_title);
-        TextView textRxBytes = (TextView) findViewById(R.id.netStats_rxBytes);
-        TextView textTxBytes = (TextView) findViewById(R.id.netStats_txBytes);
-        TextView textRxPkts = (TextView) findViewById(R.id.netStats_rxPkts);
-        TextView textTxPkts = (TextView) findViewById(R.id.netStats_txPkts);
+        TextView textRxBytes = (TextView) findViewById(R.id.netStats_rx);
+        TextView textTxBytes = (TextView) findViewById(R.id.netStats_tx);
 
         textTitle.setText(title);
-        textRxBytes.setText("Received "+rxBytes.toString()+"B");
-        textTxBytes.setText("Sent "+txBytes.toString()+"B");
-        textRxPkts.setText("Recieved "+rxPackets.toString()+" packets");
-        textTxPkts.setText("Sent "+txPackets.toString()+" packets");
+        textRxBytes.setText("Rx "+rxBytes.toString()+"B "+rxPackets.toString()+"pkt");
+        textTxBytes.setText("Tx "+txBytes.toString()+"B "+txPackets.toString()+"pkt");
+    }
+
+    /**
+     * A button action which starts monitoring the selected app in the background
+     */
+    public void startAsService(View view) {
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(MainActivity.EXTRA_NAME);
+        int uid = intent.getIntExtra(MainActivity.EXTRA_UID, -2);
+
+        // START THE SERVICE
+        Intent startServiceIntent = new Intent(this, NetworkUsageQueryServiceIntent.class);
+        startServiceIntent.putExtra(MainActivity.EXTRA_NAME, title);
+        startServiceIntent.putExtra(MainActivity.EXTRA_UID, uid);
+        this.startService(startServiceIntent);
     }
 }

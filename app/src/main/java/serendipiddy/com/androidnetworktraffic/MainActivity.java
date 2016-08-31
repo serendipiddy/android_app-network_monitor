@@ -24,9 +24,9 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> uid_map;
-    public final static String EXTRA_NAME = "NAME";
-    public final static String EXTRA_UID = "UID";
-    public final static String EXTRA_UID_COUNT = "UID_COUNT";
+    public final static String EXTRA_NAME = "serendipiddy.com.androidnetworktraffic.extra.NAME";
+    public final static String EXTRA_UID = "serendipiddy.com.androidnetworktraffic.extra.UID";
+    public final static String EXTRA_UID_COUNT = "serendipiddy.com.androidnetworktraffic.extra.UID_COUNT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
