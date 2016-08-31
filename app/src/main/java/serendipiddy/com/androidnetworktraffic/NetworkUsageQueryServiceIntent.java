@@ -1,12 +1,11 @@
 package serendipiddy.com.androidnetworktraffic;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 import android.net.TrafficStats;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,7 +59,6 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
      * parameters.
      */
     private void handleActionMonitorTraffic(String name, int uid) {
-//        throw new UnsupportedOperationException("Not yet implemented");
         Long rxBytes = TrafficStats.getUidRxBytes(uid);
         Long txBytes = TrafficStats.getUidTxBytes(uid);
         Long rxPackets = TrafficStats.getUidRxPackets(uid);
@@ -70,7 +68,7 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
         try {
             FileOutputStream fout = openFileOutput("usage_"+name+".csv", MODE_APPEND);
             String output = timestamp+","+rxBytes+","+txBytes+","+rxPackets+","+txPackets+"\n";
-            Log.d("debug, from NUQSI", output);
+            Log.d("NUQSI", output);
             fout.write(output.getBytes());
         }
         catch (FileNotFoundException e) {
@@ -79,8 +77,7 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
         catch (IOException e) {
             Log.e("error","Could not write to file usage_"+name);
         }
-
-//        Toast.makeText(getBaseContext(), "Updating app usage ("+uid+")", Toast.LENGTH_SHORT).show();
     }
+
 
 }

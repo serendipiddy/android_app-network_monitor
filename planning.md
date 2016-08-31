@@ -58,9 +58,10 @@ Reading has suggested the best way would be to run the monitor as a bg service, 
 * [Polling a webserver](http://stackoverflow.com/questions/9226927/how-to-poll-a-webservice-at-finite-interval-from-android)
 * [Android API Timer](https://developer.android.com/reference/java/util/Timer.html)
 * [Alarm example](http://stackoverflow.com/questions/4459058/alarm-manager-example)
+* [Alarm dev training](https://developer.android.com/training/scheduling/alarms.html)
 
 So, in terms of implementation the service intent will perform a read of the bytes and packets and store this on the phone with a timestamp.
-This will be called from an Alarm.
+Alarm may not be the best for high-frequency polling.
 
 The service will then save the data to internal storage, ideally in private space. [Internal storage](https://developer.android.com/guide/topics/data/data-storage.html#filesInternal)
 The user could then export the data, emailing/saving/uploading it somewhere.
