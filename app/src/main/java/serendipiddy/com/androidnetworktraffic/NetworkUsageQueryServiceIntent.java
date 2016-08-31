@@ -80,7 +80,7 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
         try {
             FileOutputStream fout = openFileOutput("usage_"+name+".csv", MODE_APPEND);
             String output = timestamp+","+rxBytes+","+txBytes+","+rxPackets+","+txPackets+"\n";
-            Log.d("NUQSI", output);
+            Log.d("NUQSI", output+" "+name);
             fout.write(output.getBytes());
         }
         catch (FileNotFoundException e) {

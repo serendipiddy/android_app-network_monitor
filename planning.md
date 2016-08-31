@@ -87,4 +87,5 @@ Found a library which seems simple and pretty enough, [mpandroidchart](https://w
     * Display the network usage of a UID in terms of number of Bytes and number of packets. Create a list of *time_interval:packets:bytes*.
         * yup, shows total in activity and has an option to start a service updating a private CSV every 10 seconds
         * next step is to display a graph and allow export of the collected data.
+        * Store the active listeners and put a STOP button on the stats activity page
 * Think about how to interleave the log events and network events, making both a useful visual and an exportable file.
