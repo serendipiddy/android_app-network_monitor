@@ -24,7 +24,6 @@ public class TrafficStatsActivity extends AppCompatActivity {
 
 //        showUsingTrafficStats(title, uid, count);
         showAndWriteToFile(title, uid, count);
-//        showUsingProcUIDStats(title, uid, count);
 
     }
 
@@ -82,9 +81,6 @@ public class TrafficStatsActivity extends AppCompatActivity {
         int uid = intent.getIntExtra(MainActivity.EXTRA_UID, -2);
 
         // START THE SERVICE
-        Intent startServiceIntent = new Intent(this, NetworkUsageQueryServiceIntent.class);
-        startServiceIntent.putExtra(MainActivity.EXTRA_NAME, title);
-        startServiceIntent.putExtra(MainActivity.EXTRA_UID, uid);
-        this.startService(startServiceIntent);
+        NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), title, new Integer(uid).toString());
     }
 }
