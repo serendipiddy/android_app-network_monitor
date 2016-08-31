@@ -61,7 +61,7 @@ Reading has suggested the best way would be to run the monitor as a bg service, 
 * [Alarm dev training](https://developer.android.com/training/scheduling/alarms.html)
 
 So, in terms of implementation the service intent will perform a read of the bytes and packets and store this on the phone with a timestamp.
-Alarm may not be the best for high-frequency polling.
+Alarm may not be the best for high-frequency polling. Use **handler** instead [example](http://stackoverflow.com/questions/29914724/scheduling-alarm-for-every-second-in-android-5-1)
 
 The service will then save the data to internal storage, ideally in private space. [Internal storage](https://developer.android.com/guide/topics/data/data-storage.html#filesInternal)
 The user could then export the data, emailing/saving/uploading it somewhere.
@@ -72,6 +72,8 @@ Create a simple activity with a time series line graph showing the traffic usage
 
 Found a library which seems simple and pretty enough, [mpandroidchart](https://www.numetriclabz.com/android-line-chart-using-mpandroidchart-tutorial/)
 
+### Add a *recently used* list
+
 ## Progress
 
 * Create empty app in android studio
@@ -81,5 +83,8 @@ Found a library which seems simple and pretty enough, [mpandroidchart](https://w
         * [Get list item member upon click](http://stackoverflow.com/questions/14325231/android-arrayadapter-with-object-and-get-some-data-from-that-object)
         * Next step is to capture that as an intent and open up a network viewer activity
     * Capture logcat output to screen, filter by a user defined UID
+        * no point
     * Display the network usage of a UID in terms of number of Bytes and number of packets. Create a list of *time_interval:packets:bytes*.
+        * yup, shows total in activity and has an option to start a service updating a private CSV every 10 seconds
+        * next step is to display a graph and allow export of the collected data.
 * Think about how to interleave the log events and network events, making both a useful visual and an exportable file.
