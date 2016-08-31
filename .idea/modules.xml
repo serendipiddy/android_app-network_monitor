@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android_app-network_monitor.iml" filepath="$PROJECT_DIR$/android_app-network_monitor.iml" />
-      <module fileurl="file:///am/kings/home1/anselljord/android_app-network_monitor/app/app.iml" filepath="/am/kings/home1/anselljord/android_app-network_monitor/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidNetworkTraffic.iml" filepath="$PROJECT_DIR$/AndroidNetworkTraffic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
