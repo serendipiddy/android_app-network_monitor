@@ -70,6 +70,7 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
         try {
             FileOutputStream fout = openFileOutput("usage_"+name+".csv", MODE_APPEND);
             String output = timestamp+","+rxBytes+","+txBytes+","+rxPackets+","+txPackets+"\n";
+            Log.d("debug, from NUQSI", output);
             fout.write(output.getBytes());
         }
         catch (FileNotFoundException e) {
@@ -79,7 +80,7 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
             Log.e("error","Could not write to file usage_"+name);
         }
 
-        Toast.makeText(getBaseContext(), "Updating app usage ("+uid+")", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getBaseContext(), "Updating app usage ("+uid+")", Toast.LENGTH_SHORT).show();
     }
 
 }
