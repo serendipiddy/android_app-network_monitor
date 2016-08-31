@@ -32,7 +32,6 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
      *
      * @see IntentService
      */
-    // TODO: Customize helper method
     public static void startActionMonitorTraffic (Context context, String name, String uid) {
         Intent intent = new Intent(context, NetworkUsageQueryServiceIntent.class);
         intent.setAction(ACTION_READ_TRAFFIC_STATS);
