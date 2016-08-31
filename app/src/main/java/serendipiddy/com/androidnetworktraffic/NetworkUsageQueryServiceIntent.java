@@ -1,10 +1,10 @@
 package serendipiddy.com.androidnetworktraffic;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.Context;
 import android.net.TrafficStats;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 public class NetworkUsageQueryServiceIntent extends IntentService {
     private static final String ACTION_READ_TRAFFIC_STATS = "serendipiddy.com.androidnetworktraffic.action.READ_TRAFFIC_STATS";
+    private static final int ALARM_INTERVAL = 10 * 1000; // 10 seconds
 
     public NetworkUsageQueryServiceIntent() {
         super("NetworkUsageQueryServiceIntent");
@@ -31,12 +32,23 @@ public class NetworkUsageQueryServiceIntent extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionMonitorTraffic (Context context, String name, String uid) {
-        Intent intent = new Intent(context, NetworkUsageQueryServiceIntent.class);
-        intent.setAction(ACTION_READ_TRAFFIC_STATS);
-        intent.putExtra(MainActivity.EXTRA_NAME, name);
-        intent.putExtra(MainActivity.EXTRA_UID, uid);
-        context.startService(intent);
+    public static void startActionMonitorTraffic (final Context context, final String name, final String uid) {
+        final Handler hans = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(context, NetworkUsageQueryServiceIntent.class);
+                intent.setAction(ACTION_READ_TRAFFIC_STATS);
+                intent.putExtra(MainActivity.EXTRA_NAME, name);
+                intent.putExtra(MainActivity.EXTRA_UID, uid);
+                context.startService(intent);
+
+                hans.postDelayed(this, ALARM_INTERVAL);
+            }
+        };
+
+        hans.post(runnable); // start it with:
+        // mHandler.removeCallbacks(runnable); / stop it with:
     }
 
     @Override
