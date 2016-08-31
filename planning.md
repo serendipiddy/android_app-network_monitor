@@ -42,8 +42,20 @@ Track the network stats of the UID for the game. This includes packet counts and
 
 Information about the remote IP might be useful too. Not sure if it will be possible to get that though.. unless I can interogate the http level..?
 
-#### TrafficStats Failed
+#### TrafficStats Failed (on Nexus)
 But there's a psuedo file on the filesystem which tracks the TCP bytes sent and received by a UID, ```/proc/uid_stat/<uid>/*```. And here's [an article about using it](http://agolovatyuk.blogspot.co.nz/2012/04/android-traffic-statistics-inside.html).
+
+WAIT. It only failed on the Nexus, it works perfectly on my own Sony Z3c. I guess the pseudo files used aren't present on the Nexus.. Which makes me wonder if there's a way to know if they're running/start the process that manages them..
+
+### Running the monitor as a service
+
+Run the statistics collector as a background service, finding the traffic usage for time intervals and saving them to a file (csv?). 
+
+So I need to have a read of the [Running a background service](https://developer.android.com/training/run-background-service/index.html) pages..
+
+### Visualise the data
+
+Create a simple activity with a time series line graph showing the traffic usage of Pogo.
 
 ## Progress
 

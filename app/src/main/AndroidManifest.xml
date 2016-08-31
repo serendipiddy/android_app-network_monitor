@@ -15,7 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TrafficStatsActivity"></activity>
+        <activity android:name=".TrafficStatsActivity" />
+
+        <service
+            android:name=".NetworkUsageQueryServiceIntent"
+            android:exported="false"></service>
     </application>
 
 </manifest>
