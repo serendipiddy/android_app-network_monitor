@@ -69,6 +69,8 @@ The user could then export the data, emailing/saving/uploading it somewhere.
 
 Create a simple activity with a time series line graph showing the traffic usage of Pogo.
 
+Found a library which seems simple and pretty enough, [mpandroidchart](https://www.numetriclabz.com/android-line-chart-using-mpandroidchart-tutorial/)
+
 ## Progress
 
 * Create empty app in android studio
