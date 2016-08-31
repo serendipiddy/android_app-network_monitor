@@ -53,6 +53,17 @@ Run the statistics collector as a background service, finding the traffic usage 
 
 So I need to have a read of the [Running a background service](https://developer.android.com/training/run-background-service/index.html) pages..
 
+Reading has suggested the best way would be to run the monitor as a bg service, but triggered by an alarm rather than using a timer (which just uses object.wait(x))
+* [Running a repeated bg task](http://stackoverflow.com/questions/5773998/running-a-repeating-task-in-background-on-a-real-time-application)
+* [Polling a webserver](http://stackoverflow.com/questions/9226927/how-to-poll-a-webservice-at-finite-interval-from-android)
+* [Android API Timer](https://developer.android.com/reference/java/util/Timer.html)
+
+So, in terms of implementation the service intent will perform a read of the bytes and packets and store this on the phone with a timestamp.
+This will be called from an Alarm.
+
+The service will then save the data to internal storage, ideally in private space. [Internal storage](https://developer.android.com/guide/topics/data/data-storage.html#filesInternal)
+The user could then export the data, emailing/saving/uploading it somewhere.
+
 ### Visualise the data
 
 Create a simple activity with a time series line graph showing the traffic usage of Pogo.
