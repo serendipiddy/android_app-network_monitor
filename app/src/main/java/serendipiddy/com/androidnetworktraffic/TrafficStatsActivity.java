@@ -1,10 +1,15 @@
 package serendipiddy.com.androidnetworktraffic;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -81,6 +86,10 @@ public class TrafficStatsActivity extends AppCompatActivity {
         int uid = intent.getIntExtra(MainActivity.EXTRA_UID, -2);
 
         // START THE SERVICE
-        NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), title, new Integer(uid).toString());
+        new NetworkStatsAlarm().setAlarm(view.getContext(),title, new Integer(uid).toString());
+//        NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), intent);
     }
+
+
+
 }
