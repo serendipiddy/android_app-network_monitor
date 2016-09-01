@@ -47,6 +47,8 @@ But there's a psuedo file on the filesystem which tracks the TCP bytes sent and 
 
 WAIT. It only failed on the Nexus, it works perfectly on my own Sony Z3c. I guess the pseudo files used aren't present on the Nexus.. Which makes me wonder if there's a way to know if they're running/start the process that manages them..
 
+An article about [why getUid<tx/rx> returns 0](http://stackoverflow.com/questions/17894966/getuidrxbytes-and-getuidtxbytes-always-return-0-in-android-4-3).
+
 ### Running the monitor as a service
 
 Run the statistics collector as a background service, finding the traffic usage for time intervals and saving them to a file (csv?). 
@@ -88,4 +90,6 @@ Found a library which seems simple and pretty enough, [mpandroidchart](https://w
         * yup, shows total in activity and has an option to start a service updating a private CSV every 10 seconds
         * next step is to display a graph and allow export of the collected data.
         * Store the active listeners and put a STOP button on the stats activity page
+            * Tips for sharedpreferences [object store](http://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object)
+            * perhaps make it a single toggle button, rather than allowing a user to repeatedly start a new service...
 * Think about how to interleave the log events and network events, making both a useful visual and an exportable file.

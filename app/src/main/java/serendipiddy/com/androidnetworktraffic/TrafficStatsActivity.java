@@ -87,11 +87,17 @@ public class TrafficStatsActivity extends AppCompatActivity {
 
         // START THE SERVICE
         NetworkUsageQueryServiceIntent.startActionMonitorTraffic(view.getContext(), title, new Integer(uid).toString());
-
-
-//        new NetworkStatsAlarm().setAlarm(view.getContext(),title, new Integer(uid).toString());
     }
 
+    /**
+     * A button action which stops the background monitoring service for the selected app
+     * @param view
+     */
+    public void stopService(View view) {
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(MainActivity.EXTRA_NAME);
+        int uid = intent.getIntExtra(MainActivity.EXTRA_UID, -2);
+    }
 
 
 }
