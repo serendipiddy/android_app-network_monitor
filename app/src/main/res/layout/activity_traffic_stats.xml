@@ -47,13 +47,24 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Start Service"
-            android:id="@+id/button"
+            android:id="@+id/button_start_network_usage_service"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:textAlignment="center"
             android:onClick="startAsService" />
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Service"
+            android:id="@+id/button_stop_network_usage_service"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:textAlignment="center"
+            android:onClick="stopService" />
 
     </LinearLayout>
 
