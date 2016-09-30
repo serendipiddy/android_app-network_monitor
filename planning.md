@@ -93,3 +93,11 @@ Found a library which seems simple and pretty enough, [mpandroidchart](https://w
             * Tips for sharedpreferences [object store](http://stackoverflow.com/questions/7145606/how-android-sharedpreferences-save-store-object) 
             * perhaps make it a single toggle button, rather than allowing a user to repeatedly start a new service...
 * Think about how to interleave the log events and network events, making both a useful visual and an exportable file.
+
+## VPN Service
+
+* [tPacketCapture](https://www.helpnetsecurity.com/2013/10/18/how-to-sniff-local-network-traffic-on-an-unrooted-android-device/)
+* [VPN service for monitoring network access](http://www.ijsrp.org/research-paper-0815/ijsrp-p4412.pdf)
+* [MopEye](http://flyer.sis.smu.edu.sg/conext15.pdf)
+* [Stackoverflow](http://stackoverflow.com/questions/9199553/possible-to-use-vpnservice-implementation-to-capture-and-send-packets)
+* [Android Docs on VPN service](https://developer.android.com/reference/android/net/VpnService.Builder.html)
