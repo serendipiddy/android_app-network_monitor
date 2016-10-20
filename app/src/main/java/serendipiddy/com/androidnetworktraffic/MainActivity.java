@@ -6,10 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
+    public final String TAG = "networkUsageMain";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == AppCompatActivity.RESULT_OK){
                 String appName = data.getStringExtra(InstalledAppList.EXTRA_NAME);
                 int appUID = data.getIntExtra(InstalledAppList.EXTRA_UID, -1);
+                Log.d(TAG, appName +" "+ appUID);
                 // TODO add it to the current list of apps displayed
                 // TODO add it to the current list of apps, in memory
             }
