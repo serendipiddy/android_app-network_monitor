@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ public class InstalledAppList extends AppCompatActivity {
     public final static String EXTRA_NAME = "serendipiddy.com.androidnetworktraffic.extra.NAME";
     public final static String EXTRA_UID = "serendipiddy.com.androidnetworktraffic.extra.UID";
     public final static String EXTRA_UID_COUNT = "serendipiddy.com.androidnetworktraffic.extra.UID_COUNT";
+    private final String TAG = "InstalledAppList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,7 @@ public class InstalledAppList extends AppCompatActivity {
 
         uid_map = new HashMap<Integer,Integer>();
         for (ApplicationInfo ai : pinfo) {
-            ApplicationItem app = new ApplicationItem(ai.packageName, ai.uid);
+            ApplicationItem app = new ApplicationItem( ai.packageName, (String) pm.getApplicationLabel(ai), ai.uid);
             applications.add(app);
             if (uid_map.containsKey(ai.uid)){
                 uid_map.put(ai.uid, uid_map.get(ai.uid)+1);
@@ -52,7 +55,7 @@ public class InstalledAppList extends AppCompatActivity {
         Collections.sort(applications);
 
         PackageArrayAdapter adapter = new PackageArrayAdapter(this,  R.layout.application_text, applications);
-        ListView applicationListView = (ListView) findViewById(R.id.applicationListView);
+        ListView applicationListView = (ListView) findViewById(R.id.installedAppListView);
         applicationListView.setAdapter(adapter);
         applicationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -81,11 +84,25 @@ public class InstalledAppList extends AppCompatActivity {
      */
     private class ApplicationItem implements Comparable {
         public final String packageName;
+        public final String appLabel;
         public final int uid;
 
-        public ApplicationItem(String packageName, int uid) {
+        public ApplicationItem(String packageName, String label, int uid) {
             this.packageName = packageName;
+            this.appLabel = label;
             this.uid = uid;
+        }
+
+        public Drawable getIcon() {
+            PackageManager pm = getPackageManager();
+            Drawable icon = null;
+            try {
+                icon = pm.getApplicationIcon(this.packageName);
+            }
+            catch (PackageManager.NameNotFoundException e) {
+                Log.e(TAG, e.toString());
+            }
+            return icon;
         }
 
         @Override
@@ -119,7 +136,7 @@ public class InstalledAppList extends AppCompatActivity {
             TextView pkgName = (TextView) convertView.findViewById(R.id.package_list_name);
             // TextView pkgUID = (TextView) convertView.findViewById(R.id.package_list_uid);
             // Populate the data into the template view using the data object
-            pkgName.setText(ai.packageName);
+            pkgName.setText(ai.appLabel);
             // pkgUID.setText(new Integer(ai.uid).toString());
             // Return the completed view to render on screen
             return convertView;
