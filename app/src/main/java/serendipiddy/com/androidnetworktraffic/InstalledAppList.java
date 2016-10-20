@@ -58,7 +58,7 @@ public class InstalledAppList extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
-                showUIDTraffic(ai);
+                returnSelectedApp(ai.packageName,ai.uid);
                 Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -66,17 +66,14 @@ public class InstalledAppList extends AppCompatActivity {
     }
 
     /**
-     * Starts the activity monitoring the network statistics
-     * @param ai
+     * Sets the value to return to the calling activity
      */
-    private void showUIDTraffic(ApplicationItem ai){
-        // TODO save UID in SharedPreferences to remember the most recent UID.
-
-//        Intent intent = new Intent(this, TrafficStatsActivity.class);
-//        intent.putExtra(EXTRA_NAME, ai.packageName);
-//        intent.putExtra(EXTRA_UID, ai.uid);
-//        intent.putExtra(EXTRA_UID_COUNT, uid_map.get(ai.uid));
-//        startActivity(intent);
+    private void returnSelectedApp(String appName, int appUID) {
+        Intent rv = new Intent();
+        rv.putExtra(EXTRA_NAME, appName);
+        rv.putExtra(EXTRA_UID, appUID);
+        setResult(AppCompatActivity.RESULT_OK, rv);
+        finish();
     }
 
     /**
