@@ -28,6 +28,7 @@ public class InstalledAppList extends AppCompatActivity {
     private Map<Integer, Integer> uid_map;
     public final static String EXTRA_NAME = "serendipiddy.com.androidnetworktraffic.extra.NAME";
     public final static String EXTRA_UID = "serendipiddy.com.androidnetworktraffic.extra.UID";
+    public final static String EXTRA_LABEL = "serendipiddy.com.androidnetworktraffic.extra.LABEL";
     public final static String EXTRA_UID_COUNT = "serendipiddy.com.androidnetworktraffic.extra.UID_COUNT";
     private final String TAG = "InstalledAppList";
 
@@ -61,7 +62,7 @@ public class InstalledAppList extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
-                returnSelectedApp(ai.packageName,ai.uid);
+                returnSelectedApp(ai.packageName, ai.appLabel, ai.uid);
                 Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -71,9 +72,10 @@ public class InstalledAppList extends AppCompatActivity {
     /**
      * Sets the value to return to the calling activity
      */
-    private void returnSelectedApp(String appName, int appUID) {
+    private void returnSelectedApp(String appName, String label, int appUID) {
         Intent rv = new Intent();
         rv.putExtra(EXTRA_NAME, appName);
+        rv.putExtra(EXTRA_LABEL, label);
         rv.putExtra(EXTRA_UID, appUID);
         setResult(AppCompatActivity.RESULT_OK, rv);
         finish();

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
@@ -52,16 +53,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == GET_NEW_APP_UID) {
             if(resultCode == AppCompatActivity.RESULT_OK){
                 String appName = data.getStringExtra(InstalledAppList.EXTRA_NAME);
+                String appLabel = data.getStringExtra(InstalledAppList.EXTRA_LABEL);
                 int appUID = data.getIntExtra(InstalledAppList.EXTRA_UID, -1);
                 Log.d(TAG, appName +" "+ appUID);
                 // TODO add it to the current list of apps displayed
+                addApplicationLabelToMainView(appName, appLabel, appUID);
                 // TODO add it to the current list of apps, in memory
             }
             if (resultCode == AppCompatActivity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
         }
-    }//onActivityResult
+    }
+
+    /**
+     * Adds an item to the list of selected apps to monitor
+     * @param name
+     * @param label
+     * @param uid
+     */
+    private void addApplicationLabelToMainView(String name, String label, int uid) {
+        TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
+        mainText.setText(label +" "+ uid);
+        // TODO use a list instead of a textview
+    }
 
     /**
      * Retrieves the list of monitored UID/apps, checks if they're valid, then displays them
