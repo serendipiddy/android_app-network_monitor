@@ -16,3 +16,6 @@ Network Usage App - Planning The Development
     - http://stackoverflow.com/a/10407371 -- how to return a value from an Intent/activity.
 2) getting network usage stats
     - https://github.com/googlesamples/android-AppUsageStatistics
+3) checking that permissions are enabled before trying to use them
+    - question, with examples of forwarding to settings and answer 
+    - http://stackoverflow.com/questions/27215013/check-if-my-application-has-usage-access-enabled
