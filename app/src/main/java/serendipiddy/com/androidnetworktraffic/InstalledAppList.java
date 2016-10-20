@@ -109,7 +109,7 @@ public class InstalledAppList extends AppCompatActivity {
         public int compareTo(Object o) {
             if (o instanceof ApplicationItem) {
                 ApplicationItem other = (ApplicationItem) o;
-                return this.packageName.compareTo(other.packageName);
+                return this.appLabel.compareTo(other.appLabel);
             }
             else
                 return 0;
