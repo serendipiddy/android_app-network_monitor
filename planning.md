@@ -19,3 +19,4 @@ Network Usage App - Planning The Development
 3) checking that permissions are enabled before trying to use them
     - question, with examples of forwarding to settings and answer 
     - http://stackoverflow.com/questions/27215013/check-if-my-application-has-usage-access-enabled
+    - displaying snackbars for feedback https://material.google.com/components/snackbars-toasts.html#snackbars-toasts-usage
