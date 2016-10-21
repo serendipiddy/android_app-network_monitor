@@ -1,5 +1,6 @@
 package serendipiddy.com.androidnetworktraffic;
 
+import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
@@ -13,6 +14,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
@@ -36,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public final String TAG = "networkUsageMain";
     private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss"; // .SSS";
     private final String USAGE_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
-    private final String TELEPHONY_PERMISSION = AppOpsManager.OPSTR_READ_PHONE_STATE;
+    private final String TELEPHONY_PERMISSION =  Manifest.permission.READ_PHONE_STATE;
+    private final int REQUEST_TELEPHONY_PERMISSION = 980;
     private String OUTPUT_DIR;
 
 
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        assertUsagePermissions();
+        assertPermissions();
     }
 
     /**
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.open_app_settings_button:
                 startActivity(new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS));
-                Toast.makeText(getBaseContext(), "App Permissions\nEnable telephony", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "App Permissions\nEnable/Disable telephony", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.open_usage_access_button:
                 startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
@@ -113,29 +116,38 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Checks whether this app has access to usage stats, if not it prompts user to grant this
      */
-    private boolean assertUsagePermissions() {
-        if (hasUsagePermission(USAGE_PERMISSION)) {
-            if (hasUsagePermission(TELEPHONY_PERMISSION)) {
+    private boolean assertPermissions() {
+        if (hasUsagePermission()) {
+            Log.d(TAG, "Check telephony permission: "+hasPermission(TELEPHONY_PERMISSION));
+            if (hasPermission(TELEPHONY_PERMISSION)) {
                 return true;
             }
-            Toast.makeText(getBaseContext(), "Please grant telephony permission", Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
+                    REQUEST_TELEPHONY_PERMISSION);
+//            Toast.makeText(getBaseContext(), "Please grant telephony permission", Toast.LENGTH_LONG).show();
+            return false;
         }
         Toast.makeText(getBaseContext(), "Please grant usage permission", Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    private boolean hasPermission(String permission) {
+        return ActivityCompat
+                .checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
      * Checks whether the the context of an app has the given permission
      * @return
      */
-    private boolean hasUsagePermission(String permission) {
+    private boolean hasUsagePermission() {
         try {
             PackageManager pm = getPackageManager();
             ApplicationInfo applicationInfo = pm.getApplicationInfo(getPackageName(), 0);
             AppOpsManager appOpsManager =
                     (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
             int mode = appOpsManager
-                    .checkOpNoThrow(permission, applicationInfo.uid, applicationInfo.packageName);
+                    .checkOpNoThrow(USAGE_PERMISSION, applicationInfo.uid, applicationInfo.packageName);
             return (mode == AppOpsManager.MODE_ALLOWED);
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -160,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!assertUsagePermissions()) {
+        if (!assertPermissions()) {
             return;
         }
 
@@ -227,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
         sb_main.append("TO:\t" + cal_to.getTime() +"\n");
         long start = cal_from.getTimeInMillis();
         long end = cal_to.getTimeInMillis() + 3600000 * 2;
-
 
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, "", end, uid, ConnectivityManager.TYPE_WIFI);
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
