@@ -64,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == AppCompatActivity.RESULT_OK){
                 String appName = data.getStringExtra(InstalledAppList.EXTRA_NAME);
                 String appLabel = data.getStringExtra(InstalledAppList.EXTRA_LABEL);
+                long installTime = data.getLongExtra(InstalledAppList.EXTRA_INSTALL_TIME, -1);
                 int appUID = data.getIntExtra(InstalledAppList.EXTRA_UID, -1);
                 Log.d(TAG, appName +" "+ appUID);
                 // TODO add it to the current list of apps displayed
-                addApplicationLabelToMainView(appName, appLabel, appUID);
+                addApplicationLabelToMainView(appName, appLabel, appUID, installTime);
                 // TODO add it to the current list of apps, in memory
             }
             if (resultCode == AppCompatActivity.RESULT_CANCELED) {
@@ -82,11 +83,11 @@ public class MainActivity extends AppCompatActivity {
      * @param label
      * @param uid
      */
-    private void addApplicationLabelToMainView(String name, String label, int uid) {
+    private void addApplicationLabelToMainView(String name, String label, int uid, long installTime) {
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(label +" "+ uid);
         // TODO use a list instead of a textview
-        testingUsageMon(uid);
+        testingUsageMon(uid, installTime);
     }
 
     /**
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
      * Prints some results for the selected uid.
      * @param uid
      */
-    private void testingUsageMon(int uid) {
+    private void testingUsageMon(int uid, long installTime) {
         // get the existing textview
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         NetworkStatsManager networkStatsMan = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
@@ -104,15 +105,15 @@ public class MainActivity extends AppCompatActivity {
         Calendar cal_from = Calendar.getInstance();
         Calendar cal_to = Calendar.getInstance();
         // TODO try adjusting granularity to within a few seconds, and see how accurate it is
-        cal_from.add(Calendar.HOUR_OF_DAY, -2);
-        cal_to.add(Calendar.HOUR_OF_DAY, +2);
+        // cal_from.add(Calendar.HOUR_OF_DAY, -2);
+        cal_from.setTimeInMillis(installTime);
+        cal_to.setTimeInMillis(System.currentTimeMillis());
         NetworkStats queryNetworkStats;
 
         // TODO handle case where usage permission isn't granted
         try {
             long start = cal_from.getTimeInMillis();
             long end = cal_to.getTimeInMillis();
-//            long end = System.currentTimeMillis();
             sb.append("FROM: " + cal_from.getTime() + "\nTO:   " + cal_to.getTime() +"\n");
 
             queryNetworkStats = networkStatsMan
