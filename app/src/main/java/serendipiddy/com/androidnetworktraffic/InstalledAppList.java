@@ -71,7 +71,7 @@ public class InstalledAppList extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
                 returnSelectedApp(ai.packageName, ai.appLabel, ai.uid, ai.getInstallTime());
-                Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
