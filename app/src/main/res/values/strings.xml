@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">AndroidNetworkTraffic</string>
-    <string name="title_activity_main">Attempt NUM 3</string>
+    <string name="app_name">AppNetworkTrafficTraffic</string>
+    <string name="title_activity_main">App Traffic Usage</string>
+    <string name="installedAppListLabel">Currently Installed Apps</string>
 </resources>
