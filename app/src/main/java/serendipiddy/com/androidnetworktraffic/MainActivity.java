@@ -213,48 +213,14 @@ public class MainActivity extends AppCompatActivity {
         NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
         NetworkStats.Bucket bucket = new NetworkStats.Bucket(); // temporary, reusable bucket
 
-        // variables to hold usage summary
-        long totalRxPackets = 0, totalTxPackets = 0, totalRxBytes = 0, totalTxBytes = 0;
-        long totalWifiRxPackets, totalWifiTxPackets, totalWifiRxBytes, totalWifiTxBytes;
-        long totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes;
+        TrafficTotals totalTraffic = new TrafficTotals();
+        TrafficTotals totals_wifi = readBuckets(queryNetworkStatsWifi, sb_wifi, type_wifi);
+        TrafficTotals totals_mobile = readBuckets(queryNetworkStatsData, sb_mobile, type_mobile);
 
-        // Iterate through the Wifi and Mobile buckets, collecting bucket and summary values
-        while (queryNetworkStatsWifi != null && queryNetworkStatsWifi.hasNextBucket()) {
-            queryNetworkStatsWifi.getNextBucket(bucket);
-            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
-            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
-            sb_wifi.append("\""+startTime + "\" \"" + endTime +"\" "
-                    + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
-                    + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
-                    + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type_wifi + "\n");
-            totalRxPackets += bucket.getRxPackets();
-            totalRxBytes += bucket.getRxBytes();
-            totalTxPackets += bucket.getTxPackets();
-            totalTxBytes += bucket.getTxBytes();
-        }
-        totalWifiRxPackets = totalRxPackets;
-        totalWifiTxPackets = totalTxPackets;
-        totalWifiRxBytes = totalRxBytes;
-        totalWifiTxBytes = totalTxBytes;
-
-        bucket = new NetworkStats.Bucket();
-        while (queryNetworkStatsData != null && queryNetworkStatsData.hasNextBucket()) {
-            queryNetworkStatsData.getNextBucket(bucket);
-            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
-            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
-            sb_mobile.append("\""+startTime + "\" \"" + endTime +"\" "
-                    + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
-                    + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
-                    + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type_mobile + "\n");
-            totalRxPackets += bucket.getRxPackets();
-            totalRxBytes += bucket.getRxBytes();
-            totalTxPackets += bucket.getTxPackets();
-            totalTxBytes += bucket.getTxBytes();
-        }
-        totalMobileRxPackets = totalRxPackets - totalWifiRxPackets;
-        totalMobileTxPackets = totalTxPackets - totalWifiTxPackets;
-        totalMobileRxBytes = totalRxBytes - totalWifiRxBytes;
-        totalMobileTxBytes = totalTxBytes - totalWifiTxBytes;
+        totalTraffic.rxPackets = totals_mobile.rxPackets + totals_wifi.rxPackets;
+        totalTraffic.txPackets = totals_mobile.txPackets + totals_wifi.txPackets;
+        totalTraffic.rxBytes = totals_mobile.rxBytes + totals_wifi.rxBytes;
+        totalTraffic.txBytes = totals_mobile.txBytes + totals_wifi.txBytes;
 
         sb_main.append("\n### Total Usage ###\n");
         appendSummary(sb_main, totalRxPackets, totalTxPackets, totalRxBytes, totalTxBytes);
@@ -270,28 +236,71 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Read the buckets in the given query, appending each buckets results to sb.
+     * @param query NetworkStats query
+     * @param sb    StringBuilder used to save output to file
+     * @param type  type of network connection
+     * @return
+     */
+    private TrafficTotals readBuckets(NetworkStats query, StringBuilder sb, String type) {
+        TrafficTotals tt = new TrafficTotals();
+        NetworkStats.Bucket bucket = new NetworkStats.Bucket();
+
+        while (query != null && query.hasNextBucket()) {
+            query.getNextBucket(bucket);
+            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
+            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
+            sb.append("\""+startTime + "\" \"" + endTime +"\" "
+                    + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
+                    + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
+                    + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type + "\n");
+            tt.rxPackets += bucket.getRxPackets();
+            tt.rxBytes += bucket.getRxBytes();
+            tt.txPackets += bucket.getTxPackets();
+            tt.txBytes += bucket.getTxBytes();
+        }
+
+        return tt;
+    }
+
+    /**
+     * Class for simplifying summary of a traffic
+     */
+    private class TrafficTotals {
+        public long rxPackets = 0;
+        public long txPackets = 0;
+        public long rxBytes = 0;
+        public long txBytes = 0;
+
+        private final int kb = 1024;
+        private final int mb = 1024 * 1024;
+
+        public long getRxKilobytes() { return rxPackets / kb; }
+        public long getTxKilobytes() { return txPackets / kb; }
+        public long getRxMegabytes() { return rxPackets / mb; }
+        public long getTxMegabytes() { return rxPackets / mb; }
+        public long getRxRate() { return rxPackets == 0 ? 0 : rxBytes / rxPackets; }
+        public long getTxRate() { return txPackets == 0 ? 0 : txBytes / txPackets; }
+
+    }
+
+    /**
      * Outputs the given summary to given string builder
      */
-    private void appendSummary(StringBuilder sb, long rxPkt, long txPkt, long rxByte, long txByte) {
-        int kiloByte = 1024;
-        String noTraffic = " (no record) ";
+    private void appendSummary(StringBuilder sb, TrafficTotals tt) {
+        String NO_TRAFFIC = " (no record) ";
+
         sb.append("Packets: \n");
-        if (rxPkt == 0) sb.append("    Rx: "+ noTraffic +" pkts\n");
-        else sb.append("    Rx: "+rxPkt+" pkts\n");
-        if (txPkt == 0) sb.append("    Tx: "+ noTraffic +" pkts\n");
-        else sb.append("    Tx: "+txPkt+" pkts\n");
+        sb.append("    Rx: "+ (tt.rxPackets == 0 ? NO_TRAFFIC : tt.rxPackets) +" pkts\n");
+        sb.append("    Tx: "+ (tt.txPackets == 0 ? NO_TRAFFIC : tt.txPackets) +" pkts\n");
 
         sb.append("Bytes: \n");
-        if (rxByte == 0) sb.append("    Rx: "+ noTraffic +" KB\n");
-        else sb.append("    Rx: "+rxByte/kiloByte+" KB\n");
-        if (txByte == 0) sb.append("    Tx: "+ noTraffic +" KB\n");
-        else sb.append("    Tx: "+txByte/kiloByte+" KB\n");
+        sb.append("    Rx: "+ (tt.rxBytes == 0 ? NO_TRAFFIC : tt.getRxKilobytes()) +" KB\n");
+        sb.append("    Tx: "+ (tt.txBytes == 0 ? NO_TRAFFIC : tt.getTxKilobytes()) +" KB\n");
 
         sb.append("Average Rate:\n");
-        if (rxPkt == 0) sb.append("    Rx: "+ noTraffic +" B/pkt\n");
-        else sb.append("    Rx: "+rxByte/rxPkt+" B/pkt\n");
-        if (txPkt == 0) sb.append("    Rx: "+ noTraffic +" B/pkt\n");
-        else sb.append("    Tx: "+txByte/txPkt+" B/pkt\n");
+        sb.append("    Rx: "+ (tt.rxPackets == 0 ? NO_TRAFFIC : tt.getRxRate()) +" B/pkt\n");
+        sb.append("    Rx: "+ (tt.txPackets == 0 ? NO_TRAFFIC : tt.getTxRate()) +" B/pkt\n");
     }
 
     /**
