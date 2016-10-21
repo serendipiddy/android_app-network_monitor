@@ -3,4 +3,10 @@
     <item
         android:title="Usage Access Settings"
         android:id="@+id/open_usage_access_button"></item>
+    <item
+        android:title="Refresh Current App"
+        android:id="@+id/refresh_current_app_button"></item>
+    <item
+        android:title="Save Current App's Usage"
+        android:id="@+id/save_usage_button"></item>
 </menu>
