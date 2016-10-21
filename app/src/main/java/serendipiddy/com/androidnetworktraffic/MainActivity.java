@@ -13,9 +13,9 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,13 +30,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
     public final String TAG = "networkUsageMain";
     private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss.SSS";
-    private final String REQUIRED_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
+    private final String USAGE_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
+    private final String TELEPHONY_PERMISSION = AppOpsManager.OPSTR_READ_PHONE_STATE;
     private final String USAGE_DIR = "testing";
     private String OUTPUT_DIR;
 
@@ -87,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_current_app_button:
-                Toast.makeText(getBaseContext(), "Unimplemented Yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "(Unimplemented)", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.save_usage_button:
                 if (currentAppName == null) {
-                    Toast.makeText(getBaseContext(), "No App selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Please Select An App", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     String outputName = currentAppName + ".usage";
@@ -99,8 +99,12 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Saved usage to: "+ OUTPUT_DIR + "/" + outputName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            case R.id.open_app_settings_button:
+                startActivity(new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS));
+                Toast.makeText(getBaseContext(), "App Permissions\nEnable telephony", Toast.LENGTH_LONG).show();
+                return true;
             case R.id.open_usage_access_button:
-                openUsageAccessSettings();
+                startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -111,32 +115,26 @@ public class MainActivity extends AppCompatActivity {
      * Checks whether this app has access to usage stats, if not it prompts user to grant this
      */
     private boolean assertUsagePermissions() {
-        if (hasUsagePermission()) {
-            return true;
+        if (hasUsagePermission(USAGE_PERMISSION)) {
+            if (hasUsagePermission(TELEPHONY_PERMISSION)) {
+                return true;
+            }
+            Toast.makeText(getBaseContext(), "Please grant telephony permission", Toast.LENGTH_LONG).show();
         }
         Toast.makeText(getBaseContext(), "Please grant usage permission", Toast.LENGTH_LONG).show();
         return false;
     }
 
     /**
-     * Sends the user to the settings page for enabling/disabling usage access
-     */
-    public void openUsageAccessSettings() {
-        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
-    }
-
-    /**
      * Checks whether the the context of an app has the given permission
      * @return
      */
-    private boolean hasUsagePermission() {
-        Context context = getBaseContext();
-        String permission = REQUIRED_PERMISSION;
+    private boolean hasUsagePermission(String permission) {
         try {
-            PackageManager pm = context.getPackageManager();
-            ApplicationInfo applicationInfo = pm.getApplicationInfo(context.getPackageName(), 0);
+            PackageManager pm = getPackageManager();
+            ApplicationInfo applicationInfo = pm.getApplicationInfo(getPackageName(), 0);
             AppOpsManager appOpsManager =
-                    (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+                    (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
             int mode = appOpsManager
                     .checkOpNoThrow(permission, applicationInfo.uid, applicationInfo.packageName);
             return (mode == AppOpsManager.MODE_ALLOWED);
@@ -232,8 +230,11 @@ public class MainActivity extends AppCompatActivity {
         long start = cal_from.getTimeInMillis();
         long end = cal_to.getTimeInMillis() + 3600000 * 2;
 
-        NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
-        NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
+
+        NetworkStats queryNetworkStatsWifi = getNetworkStats(start, "", end, uid, ConnectivityManager.TYPE_WIFI);
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String mobileSubscription = tm.getSubscriberId();
+        NetworkStats queryNetworkStatsData = getNetworkStats(start, mobileSubscription, end, uid, ConnectivityManager.TYPE_MOBILE);
 
         TrafficTotals totalTraffic = new TrafficTotals();
         TrafficTotals totals_wifi = readBuckets(queryNetworkStatsWifi, sb_wifi, type_wifi);
@@ -328,10 +329,10 @@ public class MainActivity extends AppCompatActivity {
      * @param type
      * @return
      */
-    private NetworkStats getNetworkStats(long start, long end, int uid, int type) {
+    private NetworkStats getNetworkStats(long start, String subscription, long end, int uid, int type) {
         NetworkStatsManager networkStatsMan = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
         try {
-            return networkStatsMan.queryDetailsForUid(type, "", start, end, uid);
+            return networkStatsMan.queryDetailsForUid(type, subscription, start, end, uid);
         }
         catch (RemoteException e) {
             e.printStackTrace();
