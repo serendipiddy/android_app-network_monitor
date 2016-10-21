@@ -80,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.refresh_current_app_button:
+                Toast.makeText(getBaseContext(), "Unimplemented Yet", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.save_usage_button:
+                Toast.makeText(getBaseContext(), "Unimplemented Yet", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.open_usage_access_button:
                 openUsageAccessSettings();
                 return true;
@@ -171,8 +177,6 @@ public class MainActivity extends AppCompatActivity {
      * @param uid
      */
     private void addApplicationLabelToMainView(String name, String label, int uid, long installTime) {
-        TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
-        mainText.setText(label +" "+ uid);
         testingUsageMon(name, uid, installTime);
     }
 
@@ -211,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
         NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
-        NetworkStats.Bucket bucket = new NetworkStats.Bucket(); // temporary, reusable bucket
 
         TrafficTotals totalTraffic = new TrafficTotals();
         TrafficTotals totals_wifi = readBuckets(queryNetworkStatsWifi, sb_wifi, type_wifi);
@@ -320,16 +323,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Start the timer which executes writing the stats queue to file.
-     * Instead of writing to file on main thread or for every packet.
+     * Start the Task which writes the usage buckets (sb) to file.
+     * @param sb
+     * @param filename
      */
     private void writeUsageToFile(final StringBuilder sb, final String filename) {
         Handler handler = new Handler();
-        final File logfile = new File(getBaseContext().getExternalFilesDir("testing"), filename);
+        String outputDir = "testing";
+
+        final File logfile = new File(getBaseContext().getExternalFilesDir(outputDir), filename);
         if (logfile.exists())
-        {
-            logfile.delete();
-        }
+            { logfile.delete(); }
         try {
             Log.i(TAG, "Creating file "+filename);
             logfile.createNewFile();
