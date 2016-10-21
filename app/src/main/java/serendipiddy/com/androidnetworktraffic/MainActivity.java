@@ -296,10 +296,10 @@ public class MainActivity extends AppCompatActivity {
         private final int kb = 1024;
         private final int mb = 1024 * 1024;
 
-        public long getRxKilobytes() { return rxPackets / kb; }
-        public long getTxKilobytes() { return txPackets / kb; }
-        public long getRxMegabytes() { return rxPackets / mb; }
-        public long getTxMegabytes() { return rxPackets / mb; }
+        public long getRxKilobytes() { return rxBytes / kb; }
+        public long getTxKilobytes() { return txBytes / kb; }
+        public long getRxMegabytes() { return rxBytes / mb; }
+        public long getTxMegabytes() { return rxBytes / mb; }
         public long getRxRate() { return rxPackets == 0 ? 0 : rxBytes / rxPackets; }
         public long getTxRate() { return txPackets == 0 ? 0 : txBytes / txPackets; }
 
