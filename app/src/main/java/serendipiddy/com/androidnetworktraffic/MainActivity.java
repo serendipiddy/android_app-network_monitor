@@ -206,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
         totalWifiTxBytes = totalTxBytes;
 
         // Iterate through the Wifi buckets
-        while (queryNetworkStatsWifi.hasNextBucket()) {
-            queryNetworkStatsWifi.getNextBucket(bucket);
+        while (queryNetworkStatsData.hasNextBucket()) {
+            queryNetworkStatsData.getNextBucket(bucket);
             String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
             String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
             sb_mobile.append("\""+startTime + "\" \"" + endTime +"\" "
