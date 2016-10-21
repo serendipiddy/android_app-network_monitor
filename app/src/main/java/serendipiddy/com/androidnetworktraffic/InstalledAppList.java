@@ -3,6 +3,7 @@ package serendipiddy.com.androidnetworktraffic;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +31,7 @@ public class InstalledAppList extends AppCompatActivity {
     public final static String EXTRA_NAME = "serendipiddy.com.androidnetworktraffic.extra.NAME";
     public final static String EXTRA_UID = "serendipiddy.com.androidnetworktraffic.extra.UID";
     public final static String EXTRA_LABEL = "serendipiddy.com.androidnetworktraffic.extra.LABEL";
+    public final static String EXTRA_INSTALL_TIME = "serendipiddy.com.androidnetworktraffic.extra.UID_COUNT";
     public final static String EXTRA_UID_COUNT = "serendipiddy.com.androidnetworktraffic.extra.UID_COUNT";
     private final String TAG = "InstalledAppList";
 
@@ -62,7 +65,7 @@ public class InstalledAppList extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
-                returnSelectedApp(ai.packageName, ai.appLabel, ai.uid);
+                returnSelectedApp(ai.packageName, ai.appLabel, ai.uid, ai.getInstallTime());
                 Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -72,11 +75,12 @@ public class InstalledAppList extends AppCompatActivity {
     /**
      * Sets the value to return to the calling activity
      */
-    private void returnSelectedApp(String appName, String label, int appUID) {
+    private void returnSelectedApp(String appName, String label, int appUID, long installTime) {
         Intent rv = new Intent();
         rv.putExtra(EXTRA_NAME, appName);
         rv.putExtra(EXTRA_LABEL, label);
         rv.putExtra(EXTRA_UID, appUID);
+        rv.putExtra(EXTRA_INSTALL_TIME, installTime);
         setResult(AppCompatActivity.RESULT_OK, rv);
         finish();
     }
@@ -105,6 +109,21 @@ public class InstalledAppList extends AppCompatActivity {
                 Log.e(TAG, e.toString());
             }
             return icon;
+        }
+
+        public long getInstallTime() {
+            // Calendar cal = Calendar.getInstance();
+            long time = -1;
+            PackageManager pm = getPackageManager();
+            try {
+                PackageInfo pi = pm.getPackageInfo(packageName,0);
+                // cal.setTimeInMillis( pi.firstInstallTime );
+                time = pi.firstInstallTime;
+            }
+            catch(PackageManager.NameNotFoundException e) {
+                Log.e(TAG, e.toString());
+            }
+            return time;
         }
 
         @Override
