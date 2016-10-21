@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getNewAppUID() {
         Intent chooseUID = new Intent(this, InstalledAppList.class);
+        Toast.makeText(getBaseContext(), "Populating list of apps..", Toast.LENGTH_SHORT).show();
         startActivityForResult(chooseUID, GET_NEW_APP_UID);
     }
 
