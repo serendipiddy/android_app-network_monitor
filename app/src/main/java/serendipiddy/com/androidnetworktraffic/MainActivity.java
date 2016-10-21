@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         sb.append("    "+txByte+"Tx\n");
         sb.append("Average Rate:\n");
         sb.append("    "+rxByte/rxPkt+"Rx\n");
-        sb.append("    "+txByte/rxPkt+"Tx\n");
+        sb.append("    "+txByte/txPkt+"Tx\n");
     }
 
     /**
