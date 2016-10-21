@@ -177,14 +177,14 @@ public class MainActivity extends AppCompatActivity {
         long totalRxBytes = 0;
         long totalTxBytes = 0;
 
-        long totalWifiRxPackets = 0;
-        long totalWifiTxPackets = 0;
-        long totalWifiRxBytes = 0;
-        long totalWifiTxBytes = 0;
-        long totalMobileRxPackets = 0;
-        long totalMobileTxPackets = 0;
-        long totalMobileRxBytes = 0;
-        long totalMobileTxBytes = 0;
+        long totalWifiRxPackets;
+        long totalWifiTxPackets;
+        long totalWifiRxBytes;
+        long totalWifiTxBytes;
+        long totalMobileRxPackets;
+        long totalMobileTxPackets;
+        long totalMobileRxBytes;
+        long totalMobileTxBytes;
 
         // Iterate through the Wifi and Mobile buckets, collecting bucket and summary values
         while (queryNetworkStatsWifi.hasNextBucket()) {
