@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     public final String TAG = "networkUsageMain";
     private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss.SSS";
     private final String REQUIRED_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
+    private final String USAGE_DIR = "testing";
+    private String OUTPUT_DIR;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
                 getNewAppUID();
             }
         });
+
+        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/"+USAGE_DIR;
     }
 
     @Override
@@ -84,7 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Unimplemented Yet", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.save_usage_button:
-                Toast.makeText(getBaseContext(), "Unimplemented Yet", Toast.LENGTH_SHORT).show();
+                if (currentAppName == null) {
+                    Toast.makeText(getBaseContext(), "No App selected", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String outputName = currentAppName + ".usage";
+                    writeUsageToFile(sb_wifi, outputName);
+                    Toast.makeText(getBaseContext(), "Saved usage to: "+ OUTPUT_DIR + "/" + outputName, Toast.LENGTH_SHORT).show();
+                }
                 return true;
             case R.id.open_usage_access_button:
                 openUsageAccessSettings();
@@ -180,6 +193,11 @@ public class MainActivity extends AppCompatActivity {
         testingUsageMon(name, uid, installTime);
     }
 
+    private StringBuilder sb_main = null;
+    private StringBuilder sb_wifi = null;
+    private StringBuilder sb_mobile = null;
+    private String currentAppName = null;
+
     /**
      * TODO update this description
      * Temporary method for figuring out how the NetworkStats system works.
@@ -190,9 +208,10 @@ public class MainActivity extends AppCompatActivity {
         // TODO remember the end time of the last read, then only collect updated stats, with option to refresh/collect from scratch
 
         // String builders to capture output
-        StringBuilder sb_main = new StringBuilder();
-        StringBuilder sb_wifi = new StringBuilder();
-        StringBuilder sb_mobile = new StringBuilder();
+        currentAppName = appName;
+        sb_main = new StringBuilder();
+        sb_wifi = new StringBuilder();
+        sb_mobile = new StringBuilder();
 
         String headerString = "startTime endTime startTimeStamp endTimeStamp "
                 + "rxPackets txPackets "
@@ -211,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         sb_main.append("FROM:\t" + cal_from.getTime() + "\n");
         sb_main.append("TO:\t" + cal_to.getTime() +"\n");
         long start = cal_from.getTimeInMillis();
-        long end = cal_to.getTimeInMillis();
+        long end = cal_to.getTimeInMillis() + 3600000 * 2;
 
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
         NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
@@ -234,8 +253,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(sb_main.toString());
-
-        writeUsageToFile(sb_wifi, appName+".usage");
     }
 
     /**
