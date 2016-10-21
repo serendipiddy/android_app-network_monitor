@@ -73,8 +73,10 @@ public class InstalledAppList extends AppCompatActivity {
                 returnSelectedApp(ai.packageName, ai.appLabel, ai.uid, ai.getInstallTime());
 //                Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
+//                Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
             }
         });
+        Toast.makeText(getBaseContext(), "Long press to select app", Toast.LENGTH_LONG).show();
     }
 
     /**
