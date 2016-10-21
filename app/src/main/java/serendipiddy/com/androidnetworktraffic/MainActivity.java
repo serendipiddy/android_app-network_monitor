@@ -34,10 +34,9 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
     public final String TAG = "networkUsageMain";
-    private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss.SSS";
+    private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss"; // .SSS";
     private final String USAGE_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
     private final String TELEPHONY_PERMISSION = AppOpsManager.OPSTR_READ_PHONE_STATE;
-    private final String USAGE_DIR = "testing";
     private String OUTPUT_DIR;
 
 
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/"+USAGE_DIR;
+        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/";
     }
 
     @Override
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     String outputName = currentAppName + ".usage";
                     writeUsageToFile(currentAppResults, outputName);
-                    Toast.makeText(getBaseContext(), "Saved usage to: "+ OUTPUT_DIR + "/" + outputName, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "Saved usage to: " + OUTPUT_DIR + outputName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.open_app_settings_button:
@@ -349,9 +348,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void writeUsageToFile(final StringBuilder sb, final String filename) {
         Handler handler = new Handler();
-        String outputDir = "testing";
 
-        final File logfile = new File(getBaseContext().getExternalFilesDir(outputDir), filename);
+        final File logfile = new File(getBaseContext().getExternalFilesDir(""), filename);
         if (logfile.exists())
             { logfile.delete(); }
         try {
