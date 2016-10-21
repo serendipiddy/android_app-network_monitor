@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(label +" "+ uid);
         // TODO use a list instead of a textview
-        testingUsageMon(uid, installTime);
+        testingUsageMon(name, uid, installTime);
     }
 
     /**
@@ -95,49 +95,125 @@ public class MainActivity extends AppCompatActivity {
      * Prints some results for the selected uid.
      * @param uid
      */
-    private void testingUsageMon(int uid, long installTime) {
-        // get the existing textview
-        TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
-        NetworkStatsManager networkStatsMan = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
-        StringBuilder sb = new StringBuilder();
-        sb.append(mainText.getText()+"\n");
+    private void testingUsageMon(String appName, int uid, long installTime) {
+
+        // String builders to capture output
+        StringBuilder sb_main = new StringBuilder();
+        StringBuilder sb_wifi = new StringBuilder();
+        StringBuilder sb_mobile = new StringBuilder();
+
+        sb_main.append(appName+"\n");
 
         Calendar cal_from = Calendar.getInstance();
         Calendar cal_to = Calendar.getInstance();
-        // TODO try adjusting granularity to within a few seconds, and see how accurate it is
         // cal_from.add(Calendar.HOUR_OF_DAY, -2);
         cal_from.setTimeInMillis(installTime);
         cal_to.setTimeInMillis(System.currentTimeMillis());
-        NetworkStats queryNetworkStats;
+        // TODO try adjusting granularity to within a few seconds, and see how accurate it is
+
+        long start = cal_from.getTimeInMillis();
+        long end = cal_to.getTimeInMillis();
+        sb_main.append("FROM: " + cal_from.getTime() + "\nTO:   " + cal_to.getTime() +"\n");
+        sb_main.append("FROM: " + start + "\nTO:   " + end +"\n");
+
+        NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
+        NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
+        NetworkStats.Bucket bucket = new NetworkStats.Bucket(); // temporary, reusable bucket
 
         // TODO handle case where usage permission isn't granted
-        try {
-            long start = cal_from.getTimeInMillis();
-            long end = cal_to.getTimeInMillis();
-            sb.append("FROM: " + cal_from.getTime() + "\nTO:   " + cal_to.getTime() +"\n");
 
-            queryNetworkStats = networkStatsMan
-                    .queryDetailsForUid(ConnectivityManager.TYPE_WIFI, "", start, end, uid);
+        String type_wifi = "wifi";
+        String type_mobile = "mobile";
+
+        // variables to hold usage summary
+        long totalRxPackets = 0;
+        long totalTxPackets = 0;
+        long totalRxBytes = 0;
+        long totalTxBytes = 0;
+
+        long totalWifiRxPackets = 0;
+        long totalWifiTxPackets = 0;
+        long totalWifiRxBytes = 0;
+        long totalWifiTxBytes = 0;
+        long totalMobileRxPackets = 0;
+        long totalMobileTxPackets = 0;
+        long totalMobileRxBytes = 0;
+        long totalMobileTxBytes = 0;
+
+        // Iterate through the Wifi and Mobile buckets, collecting bucket and summary values
+        while (queryNetworkStatsWifi.hasNextBucket()) {
+            queryNetworkStatsWifi.getNextBucket(bucket);
+            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
+            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
+            sb_wifi.append("\""+startTime + "\" \"" + endTime +"\" "
+                    + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
+                    + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
+                    + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type_wifi + "\n");
+            totalRxPackets += bucket.getRxPackets();
+            totalRxBytes += bucket.getRxBytes();
+            totalTxPackets += bucket.getTxPackets();
+            totalTxBytes += bucket.getTxBytes();
+        }
+        totalWifiRxPackets = totalRxPackets;
+        totalWifiTxPackets = totalTxPackets;
+        totalWifiRxBytes = totalRxBytes;
+        totalWifiTxBytes = totalTxBytes;
+
+        // Iterate through the Wifi buckets
+        while (queryNetworkStatsWifi.hasNextBucket()) {
+            queryNetworkStatsWifi.getNextBucket(bucket);
+            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
+            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
+            sb_mobile.append("\""+startTime + "\" \"" + endTime +"\" "
+                    + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
+                    + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
+                    + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type_mobile + "\n");
+        }
+        totalMobileRxPackets = totalRxPackets - totalWifiRxPackets;
+        totalMobileTxPackets = totalTxPackets - totalWifiTxPackets;
+        totalMobileRxBytes = totalRxBytes - totalWifiRxBytes;
+        totalMobileTxBytes = totalTxBytes - totalWifiTxBytes;
+
+        sb_main.append("\n### Total Usage ###\n");
+        appendSummary(sb_main, totalRxPackets, totalTxPackets, totalRxPackets, totalRxBytes);
+        sb_main.append("\n### Mobile Usage ###\n");
+        appendSummary(sb_main, totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes);
+        sb_main.append("\n### Wifi Usage ###\n");
+        appendSummary(sb_main, totalWifiRxPackets, totalWifiTxPackets, totalWifiRxBytes, totalWifiTxBytes);
+
+        TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
+        mainText.setText(sb_main.toString());
+    }
+
+    /**
+     * Outputs the given summary to given string builder
+     */
+    private void appendSummary(StringBuilder sb, long rxPkt, long txPkt, long rxByte, long txByte) {
+        sb.append("Packets: \n");
+        sb.append("    "+rxPkt+"Rx\n");
+        sb.append("    "+txPkt+"Tx\n");
+        sb.append("Bytes: \n");
+        sb.append("    "+rxByte+"Rx\n");
+        sb.append("    "+txByte+"Tx\n");
+        sb.append("Average Rate:\n");
+        sb.append("    "+rxByte/rxPkt+"Rx\n");
+        sb.append("    "+txByte/rxPkt+"Tx\n");
+    }
+
+    /**
+     * Get the network stats object to extract usage data from
+     * @param type
+     * @return
+     */
+    private NetworkStats getNetworkStats(long start, long end, int uid, int type) {
+        NetworkStatsManager networkStatsMan = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
+        try {
+            return networkStatsMan.queryDetailsForUid(type, "", start, end, uid);
         }
         catch (RemoteException e) {
             e.printStackTrace();
-            return;
         }
-
-        // Iterate through the buckets and
-        sb.append("### Buckets\n");
-        NetworkStats.Bucket bucket = new NetworkStats.Bucket();
-        while (queryNetworkStats.hasNextBucket()) {
-            queryNetworkStats.getNextBucket(bucket);
-
-            String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
-            String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
-
-            sb.append(startTime + " - " + endTime
-                    + "\n   " + bucket.getRxPackets() + "Rx " + bucket.getTxPackets() + "Tx\n");
-        }
-        sb.append("### end buckets\n");
-        mainText.setText(sb.toString());
+        return null;
     }
 
     /**
