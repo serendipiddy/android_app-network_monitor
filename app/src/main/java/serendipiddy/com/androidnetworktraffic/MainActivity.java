@@ -1,9 +1,12 @@
 package serendipiddy.com.androidnetworktraffic;
 
+import android.app.AppOpsManager;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -14,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
     public final String TAG = "networkUsageMain";
     private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss.SSS";
+    private final String REQUIRED_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +46,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        assertUsagePermissions();
 
     }
 
     /**
-     * Get a new app
+     * Checks whether this app has access to usage stats, if not it prompts user to grant this
+     */
+    private boolean assertUsagePermissions() {
+        if (hasUsagePermission()) {
+            return true;
+        }
+
+        // display message to user
+        Toast.makeText(getBaseContext(), "Please grant usage permission", Toast.LENGTH_LONG).show();
+        // add a button to start settings activity
+        return false; // TODO make this return true once set, if this is required
+    }
+
+    /**
+     * Checks whether the the context of an app has the given permission
+     * @return
+     */
+    private boolean hasUsagePermission() {
+        Context context = getBaseContext();
+        String permission = REQUIRED_PERMISSION;
+        try {
+            PackageManager pm = context.getPackageManager();
+            ApplicationInfo applicationInfo = pm.getApplicationInfo(context.getPackageName(), 0);
+            AppOpsManager appOpsManager =
+                    (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOpsManager
+                    .checkOpNoThrow(permission, applicationInfo.uid, applicationInfo.packageName);
+            return (mode == AppOpsManager.MODE_ALLOWED);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get a new app to display network usage for
      */
     private void getNewAppUID() {
         Intent chooseUID = new Intent(this, InstalledAppList.class);
@@ -60,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!assertUsagePermissions()) {
+            return;
+        }
+
         if (requestCode == GET_NEW_APP_UID) {
             if(resultCode == AppCompatActivity.RESULT_OK){
                 String appName = data.getStringExtra(InstalledAppList.EXTRA_NAME);
@@ -90,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * TODO update this description
      * Temporary method for figuring out how the NetworkStats system works.
      * Prints some results for the selected uid.
      * @param uid
