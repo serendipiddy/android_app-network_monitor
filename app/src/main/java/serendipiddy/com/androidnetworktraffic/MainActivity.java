@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         totalMobileTxBytes = totalTxBytes - totalWifiTxBytes;
 
         sb_main.append("\n### Total Usage ###\n");
-        appendSummary(sb_main, totalRxPackets, totalTxPackets, totalRxPackets, totalRxBytes);
+        appendSummary(sb_main, totalRxPackets, totalTxPackets, totalRxBytes, totalTxBytes);
         sb_main.append("\n### Mobile Usage ###\n");
         appendSummary(sb_main, totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes);
         sb_main.append("\n### Wifi Usage ###\n");
