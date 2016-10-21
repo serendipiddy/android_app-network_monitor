@@ -159,8 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
         long start = cal_from.getTimeInMillis();
         long end = cal_to.getTimeInMillis();
-        sb_main.append("FROM: " + cal_from.getTime() + "\nTO:   " + cal_to.getTime() +"\n");
-        sb_main.append("FROM: " + start + "\nTO:   " + end +"\n");
+        sb_main.append("FROM:"
+                + "\n    " + cal_from.getTime()
+                + "\n    " + start + "\n");
+        sb_main.append("TO:"
+                + "\n    " + cal_to.getTime()
+                + "\n    " + end +"\n");
 
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
         NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
@@ -168,26 +172,16 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO handle case where usage permission isn't granted
 
-        String type_wifi = "wifi";
-        String type_mobile = "mobile";
+        String type_wifi = "wifi", type_mobile = "mobile";
 
         // variables to hold usage summary
-        long totalRxPackets = 0;
-        long totalTxPackets = 0;
-        long totalRxBytes = 0;
-        long totalTxBytes = 0;
+        long totalRxPackets = 0, totalTxPackets = 0, totalRxBytes = 0, totalTxBytes = 0;
 
-        long totalWifiRxPackets;
-        long totalWifiTxPackets;
-        long totalWifiRxBytes;
-        long totalWifiTxBytes;
-        long totalMobileRxPackets;
-        long totalMobileTxPackets;
-        long totalMobileRxBytes;
-        long totalMobileTxBytes;
+        long totalWifiRxPackets, totalWifiTxPackets, totalWifiRxBytes, totalWifiTxBytes;
+        long totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes;
 
         // Iterate through the Wifi and Mobile buckets, collecting bucket and summary values
-        while (queryNetworkStatsWifi.hasNextBucket()) {
+        while (queryNetworkStatsWifi != null && queryNetworkStatsWifi.hasNextBucket()) {
             queryNetworkStatsWifi.getNextBucket(bucket);
             String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
             String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
@@ -205,8 +199,8 @@ public class MainActivity extends AppCompatActivity {
         totalWifiRxBytes = totalRxBytes;
         totalWifiTxBytes = totalTxBytes;
 
-        // Iterate through the Wifi buckets
-        while (queryNetworkStatsData.hasNextBucket()) {
+        bucket = new NetworkStats.Bucket();
+        while (queryNetworkStatsData != null && queryNetworkStatsData.hasNextBucket()) {
             queryNetworkStatsData.getNextBucket(bucket);
             String startTime = getDate(bucket.getStartTimeStamp(),DATE_FORMAT);
             String endTime = getDate(bucket.getEndTimeStamp(),DATE_FORMAT);
@@ -239,17 +233,25 @@ public class MainActivity extends AppCompatActivity {
      * Outputs the given summary to given string builder
      */
     private void appendSummary(StringBuilder sb, long rxPkt, long txPkt, long rxByte, long txByte) {
+        int kiloByte = 1024;
+        String noTraffic = " (no record) ";
         sb.append("Packets: \n");
-        sb.append("    "+rxPkt+"Rx\n");
-        sb.append("    "+txPkt+"Tx\n");
+        if (rxPkt == 0) sb.append("    Rx: "+ noTraffic +" pkts\n");
+        else sb.append("    Rx: "+rxPkt+" pkts\n");
+        if (txPkt == 0) sb.append("    Tx: "+ noTraffic +" pkts\n");
+        else sb.append("    Tx: "+txPkt+" pkts\n");
+
         sb.append("Bytes: \n");
-        sb.append("    "+rxByte+"Rx\n");
-        sb.append("    "+txByte+"Tx\n");
+        if (rxByte == 0) sb.append("    Rx: "+ noTraffic +" KB\n");
+        else sb.append("    Rx: "+rxByte/kiloByte+" KB\n");
+        if (txByte == 0) sb.append("    Tx: "+ noTraffic +" KB\n");
+        else sb.append("    Tx: "+txByte/kiloByte+" KB\n");
+
         sb.append("Average Rate:\n");
-        if (rxPkt == 0) sb.append("    0Rx\n");
-        else sb.append("    "+rxByte/rxPkt+"Rx\n");
-        if (txPkt == 0) sb.append("    0Tx\n");
-        else sb.append("    "+txByte/txPkt+"Tx\n");
+        if (rxPkt == 0) sb.append("    Rx: "+ noTraffic +" B/pkt\n");
+        else sb.append("    Rx: "+rxByte/rxPkt+" B/pkt\n");
+        if (txPkt == 0) sb.append("    Rx: "+ noTraffic +" B/pkt\n");
+        else sb.append("    Tx: "+txByte/txPkt+" B/pkt\n");
     }
 
     /**
