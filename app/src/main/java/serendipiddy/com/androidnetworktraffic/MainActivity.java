@@ -10,11 +10,15 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,13 +45,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getNewAppUID();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         assertUsagePermissions();
+    }
 
+    /**
+     * Creates the options menu (top right)
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    /**
+     * Handles menu button presses
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.open_usage_access_button:
+                openUsageAccessSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -57,11 +90,15 @@ public class MainActivity extends AppCompatActivity {
         if (hasUsagePermission()) {
             return true;
         }
-
-        // display message to user
         Toast.makeText(getBaseContext(), "Please grant usage permission", Toast.LENGTH_LONG).show();
-        // add a button to start settings activity
-        return false; // TODO make this return true once set, if this is required
+        return false;
+    }
+
+    /**
+     * Sends the user to the settings page for enabling/disabling usage access
+     */
+    public void openUsageAccessSettings() {
+        startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
     }
 
     /**

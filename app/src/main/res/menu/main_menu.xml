@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Usage Access Settings"
+        android:id="@+id/open_usage_access_button"></item>
+</menu>
