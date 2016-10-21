@@ -40,6 +40,11 @@ public class InstalledAppList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_installed_app_list);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         PackageManager pm = getPackageManager();
         List<ApplicationInfo> pinfo = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         ArrayList<ApplicationItem> applications = new ArrayList<>();
@@ -66,7 +71,7 @@ public class InstalledAppList extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
                 returnSelectedApp(ai.packageName, ai.appLabel, ai.uid, ai.getInstallTime());
-                // Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "Selected UID "+ai.uid, Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
