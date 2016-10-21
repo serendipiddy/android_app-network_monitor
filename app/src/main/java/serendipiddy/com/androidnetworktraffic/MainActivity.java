@@ -217,8 +217,7 @@ public class MainActivity extends AppCompatActivity {
         String type_wifi = "wifi", type_mobile = "mobile";
 
         sb_main.append(appName+"\n");
-        sb_wifi.append(headerString);
-        sb_mobile.append(headerString);
+        currentAppResults.append(headerString);
 
         Calendar cal_from = Calendar.getInstance();
         Calendar cal_to = Calendar.getInstance();
