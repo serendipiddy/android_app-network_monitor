@@ -223,11 +223,11 @@ public class MainActivity extends AppCompatActivity {
         totalTraffic.txBytes = totals_mobile.txBytes + totals_wifi.txBytes;
 
         sb_main.append("\n### Total Usage ###\n");
-        appendSummary(sb_main, totalRxPackets, totalTxPackets, totalRxBytes, totalTxBytes);
+        appendSummary(sb_main, totalTraffic);
         sb_main.append("\n### Mobile Usage ###\n");
-        appendSummary(sb_main, totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes);
+        appendSummary(sb_main, totals_mobile);
         sb_main.append("\n### Wifi Usage ###\n");
-        appendSummary(sb_main, totalWifiRxPackets, totalWifiTxPackets, totalWifiRxBytes, totalWifiTxBytes);
+        appendSummary(sb_main, totals_wifi);
 
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(sb_main.toString());
