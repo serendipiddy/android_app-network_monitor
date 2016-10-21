@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
         // String builders to capture output
         currentAppName = appName;
+        currentAppResults = new StringBuilder();
         StringBuilder sb_main = new StringBuilder();
         StringBuilder sb_wifi = new StringBuilder();
         StringBuilder sb_mobile = new StringBuilder();
