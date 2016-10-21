@@ -9,6 +9,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +24,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -185,35 +190,31 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder sb_wifi = new StringBuilder();
         StringBuilder sb_mobile = new StringBuilder();
 
+        String headerString = "startTime endTime startTimeStamp endTimeStamp "
+                + "rxPackets txPackets "
+                + "rxBytes txBytes type\n";
+        String type_wifi = "wifi", type_mobile = "mobile";
+
         sb_main.append(appName+"\n");
+        sb_wifi.append(headerString);
+        sb_mobile.append(headerString);
 
         Calendar cal_from = Calendar.getInstance();
         Calendar cal_to = Calendar.getInstance();
-        // cal_from.add(Calendar.HOUR_OF_DAY, -2);
         cal_from.setTimeInMillis(installTime);
         cal_to.setTimeInMillis(System.currentTimeMillis());
-        // TODO try adjusting granularity to within a few seconds, and see how accurate it is
 
+        sb_main.append("FROM:\t" + cal_from.getTime() + "\n");
+        sb_main.append("TO:\t" + cal_to.getTime() +"\n");
         long start = cal_from.getTimeInMillis();
         long end = cal_to.getTimeInMillis();
-        sb_main.append("FROM:"
-                + "\n    " + cal_from.getTime()
-                + "\n    " + start + "\n");
-        sb_main.append("TO:"
-                + "\n    " + cal_to.getTime()
-                + "\n    " + end +"\n");
 
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_WIFI);
         NetworkStats queryNetworkStatsData = getNetworkStats(start, end, uid, ConnectivityManager.TYPE_MOBILE);
         NetworkStats.Bucket bucket = new NetworkStats.Bucket(); // temporary, reusable bucket
 
-        // TODO handle case where usage permission isn't granted
-
-        String type_wifi = "wifi", type_mobile = "mobile";
-
         // variables to hold usage summary
         long totalRxPackets = 0, totalTxPackets = 0, totalRxBytes = 0, totalTxBytes = 0;
-
         long totalWifiRxPackets, totalWifiTxPackets, totalWifiRxBytes, totalWifiTxBytes;
         long totalMobileRxPackets, totalMobileTxPackets, totalMobileRxBytes, totalMobileTxBytes;
 
@@ -264,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(sb_main.toString());
+
+        writeUsageToFile(sb_wifi, appName+".usage");
     }
 
     /**
@@ -308,10 +311,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the list of monitored UID/apps, checks if they're valid, then displays them
+     * Start the timer which executes writing the stats queue to file.
+     * Instead of writing to file on main thread or for every packet.
      */
-    private void populateMonitoredAppList() {
+    private void writeUsageToFile(final StringBuilder sb, final String filename) {
+        Handler handler = new Handler();
+        final File logfile = new File(getBaseContext().getExternalFilesDir("testing"), filename);
+        if (logfile.exists())
+        {
+            logfile.delete();
+        }
+        try {
+            Log.i(TAG, "Creating file "+filename);
+            logfile.createNewFile();
+        }
+        catch (IOException e)
+            { e.printStackTrace(); }
 
+        handler.post(new Runnable() {
+            /**
+             * Write the statistics info buffer to file
+             */
+            public void run() {
+                Log.d(TAG, "Writing data to file \""+ filename +"\"");
+                try
+                {
+                    //BufferedWriter for performance, true to set append to file flag
+                    BufferedWriter buf = new BufferedWriter(new FileWriter(logfile, true));
+                    buf.append(sb.toString());
+                    buf.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
