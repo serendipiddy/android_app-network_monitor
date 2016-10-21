@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     String outputName = currentAppName + ".usage";
-                    writeUsageToFile(sb_wifi, outputName);
+                    writeUsageToFile(currentAppResults, outputName);
                     Toast.makeText(getBaseContext(), "Saved usage to: "+ OUTPUT_DIR + "/" + outputName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -192,9 +192,7 @@ public class MainActivity extends AppCompatActivity {
         testingUsageMon(name, uid, installTime);
     }
 
-    private StringBuilder sb_main = null;
-    private StringBuilder sb_wifi = null;
-    private StringBuilder sb_mobile = null;
+    private StringBuilder currentAppResults = null;
     private String currentAppName = null;
 
     /**
@@ -208,9 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
         // String builders to capture output
         currentAppName = appName;
-        sb_main = new StringBuilder();
-        sb_wifi = new StringBuilder();
-        sb_mobile = new StringBuilder();
+        StringBuilder sb_main = new StringBuilder();
+        StringBuilder sb_wifi = new StringBuilder();
+        StringBuilder sb_mobile = new StringBuilder();
 
         String headerString = "startTime endTime startTimeStamp endTimeStamp "
                 + "rxPackets txPackets "
@@ -255,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
 
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(sb_main.toString());
+
+        currentAppResults.append(sb_wifi);
+        currentAppResults.append(sb_mobile);
     }
 
     /**
