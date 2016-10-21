@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     private void addApplicationLabelToMainView(String name, String label, int uid, long installTime) {
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(label +" "+ uid);
-        // TODO use a list instead of a textview
         testingUsageMon(name, uid, installTime);
     }
 
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
      * @param uid
      */
     private void testingUsageMon(String appName, int uid, long installTime) {
+        // TODO remember the end time of the last read, then only collect updated stats, with option to refresh/collect from scratch
 
         // String builders to capture output
         StringBuilder sb_main = new StringBuilder();
@@ -168,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
                     + bucket.getStartTimeStamp() + " " + bucket.getEndTimeStamp() + " "
                     + bucket.getRxPackets() + " " + bucket.getTxPackets() + " "
                     + bucket.getRxBytes() + " " + bucket.getTxBytes() + " " + type_mobile + "\n");
+            totalRxPackets += bucket.getRxPackets();
+            totalRxBytes += bucket.getRxBytes();
+            totalTxPackets += bucket.getTxPackets();
+            totalTxBytes += bucket.getTxBytes();
         }
         totalMobileRxPackets = totalRxPackets - totalWifiRxPackets;
         totalMobileTxPackets = totalTxPackets - totalWifiTxPackets;
