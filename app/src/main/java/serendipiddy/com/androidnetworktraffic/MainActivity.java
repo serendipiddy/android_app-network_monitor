@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
@@ -231,17 +232,30 @@ public class MainActivity extends AppCompatActivity {
         long end = cal_to.getTimeInMillis() + 3600000 * 2;
 
         UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        List<UsageStats> us = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+//        List<UsageStats> us = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+//
+//        for (UsageStats u : us) {
+//            if (u == null)
+//                continue;
+//            if (u.getPackageName().contains(appName)) {
+//                usageResults.append("###" + u.getPackageName() + "\n");
+//                usageResults.append("  * Total: " + (double) u.getTotalTimeInForeground()/(1000) + "\n");
+//                usageResults.append("  * Beginning: " + getDate(u.getFirstTimeStamp(),DATE_FORMAT) + "\n");
+//                usageResults.append("  * End of TS:" + getDate(u.getLastTimeStamp(),DATE_FORMAT) + "\n");
+//                usageResults.append("  * Previous:" + getDate(u.getLastTimeUsed(),DATE_FORMAT) + "\n");
+//            }
+//        }
 
-            for (UsageStats u : us) {
-            if (u.getPackageName().contains(appName)) {
-                usageResults.append("###" + u.getPackageName() + "\n");
-                usageResults.append("  * Total: " + (double) u.getTotalTimeInForeground()/(1000) + "\n");
-                usageResults.append("  * Beginning: " + getDate(u.getFirstTimeStamp(),DATE_FORMAT) + "\n");
-                usageResults.append("  * End of TS:" + getDate(u.getLastTimeStamp(),DATE_FORMAT) + "\n");
-                usageResults.append("  * Previous:" + getDate(u.getLastTimeUsed(),DATE_FORMAT) + "\n");
-            }
-        }
+        // using aggregate/package name method, get total time available..
+        Map<String, UsageStats> agg = usm.queryAndAggregateUsageStats(start, end);
+
+        UsageStats u = agg.get(appName);
+        if (u == null) return;
+        usageResults.append("###" + u.getPackageName() + "\n");
+        usageResults.append("  * Total: " + (double) u.getTotalTimeInForeground()/(1000) + "s\n");
+        usageResults.append("  * Beginning: " + getDate(u.getFirstTimeStamp(),DATE_FORMAT) + "\n");
+        usageResults.append("  * End of TS: " + getDate(u.getLastTimeStamp(),DATE_FORMAT) + "\n");
+        usageResults.append("  * Previous:  " + getDate(u.getLastTimeUsed(),DATE_FORMAT) + "\n");
 
 
         mainText.setText(usageResults.toString());
