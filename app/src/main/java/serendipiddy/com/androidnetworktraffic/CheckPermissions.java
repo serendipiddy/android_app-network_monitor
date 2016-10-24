@@ -36,14 +36,17 @@ public class CheckPermissions extends AppCompatActivity {
         // check permissions are available:
         boolean telephonyPerm = hasPermission(TELEPHONY_PERMISSION);
         boolean usagePerm = hasUsagePermission();
+
+        Button telephony_button = (Button) findViewById(R.id.permissions_activity_telephony_button);
+        Button usage_button = (Button) findViewById(R.id.permissions_activity_access_button);
+        telephony_button.setEnabled(false);
+        usage_button.setEnabled(false);
+
         if (!telephonyPerm) { // request telephony permissions
-            Button button = (Button) findViewById(R.id.permissions_activity_telephony_button);
-            button.setEnabled(true);
+            telephony_button.setEnabled(true);
         }
         if (!usagePerm) { // guide user to the correct activity to grant this
-            // enable button to start usage permission activity
-            Button button = (Button) findViewById(R.id.permissions_activity_access_button);
-            button.setEnabled(true);
+            usage_button.setEnabled(true);
         }
 
         if (telephonyPerm && usagePerm) {
