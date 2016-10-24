@@ -24,23 +24,31 @@ public class CheckPermissions extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_permissions);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
         // check permissions are available:
         boolean telephonyPerm = hasPermission(TELEPHONY_PERMISSION);
         boolean usagePerm = hasUsagePermission();
         if (!telephonyPerm) { // request telephony permissions
-            Button button = (Button) findViewById(R.id.permissions_activity_access_button);
+            Button button = (Button) findViewById(R.id.permissions_activity_telephony_button);
             button.setEnabled(true);
         }
         if (!usagePerm) { // guide user to the correct activity to grant this
             // enable button to start usage permission activity
-            Button button = (Button) findViewById(R.id.permissions_activity_telephony_button);
+            Button button = (Button) findViewById(R.id.permissions_activity_access_button);
             button.setEnabled(true);
         }
 
         if (telephonyPerm && usagePerm) {
             // if permissions are available continue on to regular activity
-            startActivity(new Intent(this, InstalledAppList.class));
+            startActivity(new Intent(this, InstalledAppListActivity.class));
         }
     }
 
@@ -58,6 +66,14 @@ public class CheckPermissions extends AppCompatActivity {
         ActivityCompat.requestPermissions( this,
                 new String[]{Manifest.permission.READ_PHONE_STATE},
                 REQUEST_TELEPHONY_PERMISSION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_TELEPHONY_PERMISSION) {
+            checkPermissions();
+        }
     }
 
     /**
