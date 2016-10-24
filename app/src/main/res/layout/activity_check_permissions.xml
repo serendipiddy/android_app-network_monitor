@@ -8,5 +8,51 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="serendipiddy.com.androidnetworktraffic.CheckPermissions">
+    <!--tools:showIn="@layout/activity_main">-->
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/permissions_activity_title"
+        android:id="@+id/permissions_activity_title_box"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/permissions_activity_message"
+        android:id="@+id/permissions_activity_message_box"
+        android:layout_below="@+id/permissions_activity_title_box"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:textAlignment="textStart"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/permissions_activity_usage_button_text"
+        android:id="@+id/permissions_activity_access_button"
+        android:layout_below="@+id/permissions_activity_message_box"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:onClick="startUsagePermissionActivity"
+        android:enabled="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/permissions_activity_telephony_button_text"
+        android:id="@+id/permissions_activity_telephony_button"
+        android:layout_below="@+id/permissions_activity_access_button"
+        android:layout_centerHorizontal="true"
+        android:onClick="requestTelephonyPermission"
+        android:enabled="false" />
 </RelativeLayout>
