@@ -194,9 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 long installTime = data.getLongExtra(InstalledAppList.EXTRA_INSTALL_TIME, -1);
                 int appUID = data.getIntExtra(InstalledAppList.EXTRA_UID, -1);
                 Log.d(TAG, appName +" "+ appUID);
-                // TODO add it to the current list of apps displayed
                 addApplicationLabelToMainView(appName, appLabel, appUID, installTime);
-                // TODO add it to the current list of apps, in memory
             }
             if (resultCode == AppCompatActivity.RESULT_CANCELED) {
                 //Write your code if there's no result
