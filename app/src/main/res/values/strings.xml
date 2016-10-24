@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AppNetworkTrafficTraffic</string>
     <string name="title_activity_main">App Traffic Usage</string>
-    <string name="installedAppListLabel">Currently Installed Apps</string>
+    <string name="installedAppListLabel">Installed Apps</string>
 
     <string name="permissions_activity_title">App Permissions</string>
     <string name="permissions_activity_telephony_button_text">Telephony Access</string>
