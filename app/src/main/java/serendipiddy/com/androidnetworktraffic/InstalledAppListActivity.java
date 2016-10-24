@@ -36,7 +36,6 @@ public class InstalledAppListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_installed_app_list);
-
     }
 
     @Override
@@ -72,10 +71,11 @@ public class InstalledAppListActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
+                startActivity(new Intent(getBaseContext(), AppUsageSummary.class));
                 return false;
             }
         });
-        Toast.makeText(getBaseContext(), "Long press to select app", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Long press to select app", Toast.LENGTH_LONG).show();
     }
 
     /**
