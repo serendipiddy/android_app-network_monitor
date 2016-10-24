@@ -2,4 +2,15 @@
     <string name="app_name">AppNetworkTrafficTraffic</string>
     <string name="title_activity_main">App Traffic Usage</string>
     <string name="installedAppListLabel">Currently Installed Apps</string>
+
+    <string name="permissions_activity_title">App Permissions</string>
+    <string name="permissions_activity_telephony_button_text">Telephony Access</string>
+    <string name="permissions_activity_usage_button_text">Usage Access</string>
+    <string name="permissions_activity_message">
+        This app requires special permissions to access historical information stored on the phone.
+        This includes:
+        \n\t&#8226; App network history
+        \n\t&#8226; App usage history
+        \n\t&#8226; Mobile subscription ID
+        \nPlease grant the following permissions to enable this app to work.</string>
 </resources>
