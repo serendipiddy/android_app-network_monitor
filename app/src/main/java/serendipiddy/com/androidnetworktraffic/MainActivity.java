@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AppOpsManager;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -32,16 +34,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     public final static int GET_NEW_APP_UID = 1923; // putting here keeps the intent references locally consistent
     public final String TAG = "networkUsageMain";
-    private final String DATE_FORMAT = "dd/MM/yy hh:mm:ss"; // .SSS";
+    private final String DATE_FORMAT = "dd/MM/yy HH:mm:ss"; // .SSS";
     private final String USAGE_PERMISSION = AppOpsManager.OPSTR_GET_USAGE_STATS;
     private final String TELEPHONY_PERMISSION =  Manifest.permission.READ_PHONE_STATE;
     private final int REQUEST_TELEPHONY_PERMISSION = 980;
     private String OUTPUT_DIR;
 
+    private final String headerString = "startTime endTime startTimeStamp endTimeStamp "
+            + "rxPackets txPackets "
+            + "rxBytes txBytes type\n";
+    private StringBuilder currentAppWifiResults = null;
+    private StringBuilder currentAppMobileResults = null;
+    private String currentAppName = null;
 
 
     @Override
@@ -96,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Please Select An App", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    String outputName = currentAppName + ".usage";
-                    writeUsageToFile(currentAppResults, outputName);
-                    Toast.makeText(getBaseContext(), "Saved usage to: " + OUTPUT_DIR + outputName, Toast.LENGTH_SHORT).show();
+                    writeUsageToFile(currentAppWifiResults, currentAppName + ".wifi.usage");
+                    writeUsageToFile(currentAppMobileResults, currentAppName  + ".mobile.usage");
+                    Toast.makeText(getBaseContext(), "Saved usage to: " + OUTPUT_DIR + currentAppName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.open_app_settings_button:
@@ -201,10 +211,41 @@ public class MainActivity extends AppCompatActivity {
      */
     private void addApplicationLabelToMainView(String name, String label, int uid, long installTime) {
         testingUsageMon(name, uid, installTime);
+        testingUsageStats(name, uid, installTime);
     }
 
-    private StringBuilder currentAppResults = null;
-    private String currentAppName = null;
+    private void testingUsageStats(String appName, int uid, long installTime) {
+        // String builders to capture output
+        currentAppName = appName;
+        StringBuilder usageResults = new StringBuilder();
+
+        TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
+        usageResults.append(mainText.getText()+"\n");
+
+        Calendar cal_from = Calendar.getInstance();
+        Calendar cal_to = Calendar.getInstance();
+        cal_from.setTimeInMillis(installTime);
+        cal_to.setTimeInMillis(System.currentTimeMillis());
+
+        long start = cal_from.getTimeInMillis();
+        long end = cal_to.getTimeInMillis() + 3600000 * 2;
+
+        UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        List<UsageStats> us = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+
+            for (UsageStats u : us) {
+            if (u.getPackageName().contains(appName)) {
+                usageResults.append("###" + u.getPackageName() + "\n");
+                usageResults.append("  * Total: " + (double) u.getTotalTimeInForeground()/(1000) + "\n");
+                usageResults.append("  * Beginning: " + getDate(u.getFirstTimeStamp(),DATE_FORMAT) + "\n");
+                usageResults.append("  * End of TS:" + getDate(u.getLastTimeStamp(),DATE_FORMAT) + "\n");
+                usageResults.append("  * Previous:" + getDate(u.getLastTimeUsed(),DATE_FORMAT) + "\n");
+            }
+        }
+
+
+        mainText.setText(usageResults.toString());
+    }
 
     /**
      * TODO update this description
@@ -217,19 +258,15 @@ public class MainActivity extends AppCompatActivity {
 
         // String builders to capture output
         currentAppName = appName;
-        currentAppResults = new StringBuilder();
+        currentAppWifiResults = new StringBuilder();
+        currentAppMobileResults = new StringBuilder();
         StringBuilder sb_main = new StringBuilder();
-        StringBuilder sb_wifi = new StringBuilder();
-        StringBuilder sb_mobile = new StringBuilder();
 
-        String headerString = "startTime endTime startTimeStamp endTimeStamp "
-                + "rxPackets txPackets "
-                + "rxBytes txBytes type\n";
         String type_wifi = "wifi", type_mobile = "mobile";
 
         sb_main.append(appName+"\n");
-        currentAppResults.append(headerString);
 
+        // Calculate 'to' and 'from' times
         Calendar cal_from = Calendar.getInstance();
         Calendar cal_to = Calendar.getInstance();
         cal_from.setTimeInMillis(installTime);
@@ -240,15 +277,18 @@ public class MainActivity extends AppCompatActivity {
         long start = cal_from.getTimeInMillis();
         long end = cal_to.getTimeInMillis() + 3600000 * 2;
 
+        // Make network stats queries
         NetworkStats queryNetworkStatsWifi = getNetworkStats(start, "", end, uid, ConnectivityManager.TYPE_WIFI);
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String mobileSubscription = tm.getSubscriberId();
         NetworkStats queryNetworkStatsData = getNetworkStats(start, mobileSubscription, end, uid, ConnectivityManager.TYPE_MOBILE);
 
+        // Count packets and read each bucket into StringBuilders.
         TrafficTotals totalTraffic = new TrafficTotals();
-        TrafficTotals totals_wifi = readBuckets(queryNetworkStatsWifi, sb_wifi, type_wifi);
-        TrafficTotals totals_mobile = readBuckets(queryNetworkStatsData, sb_mobile, type_mobile);
+        TrafficTotals totals_wifi = readBuckets(queryNetworkStatsWifi, currentAppWifiResults, type_wifi);
+        TrafficTotals totals_mobile = readBuckets(queryNetworkStatsData, currentAppMobileResults, type_mobile);
 
+        // Calculate and write summary to main string builder
         totalTraffic.rxPackets = totals_mobile.rxPackets + totals_wifi.rxPackets;
         totalTraffic.txPackets = totals_mobile.txPackets + totals_wifi.txPackets;
         totalTraffic.rxBytes = totals_mobile.rxBytes + totals_wifi.rxBytes;
@@ -261,11 +301,9 @@ public class MainActivity extends AppCompatActivity {
         sb_main.append("\n### Wifi Usage ###\n");
         appendSummary(sb_main, totals_wifi);
 
+        // Output summary to TextView
         TextView mainText = (TextView) findViewById(R.id.selectedApplicationsView);
         mainText.setText(sb_main.toString());
-
-        currentAppResults.append(sb_wifi);
-        currentAppResults.append(sb_mobile);
     }
 
     /**
@@ -360,6 +398,11 @@ public class MainActivity extends AppCompatActivity {
     private void writeUsageToFile(final StringBuilder sb, final String filename) {
         Handler handler = new Handler();
 
+        if (sb.length() <= 0) {
+            return;
+        }
+        sb.insert(0, headerString);
+
         final File logfile = new File(getBaseContext().getExternalFilesDir(""), filename);
         if (logfile.exists())
             { logfile.delete(); }
@@ -400,10 +443,14 @@ public class MainActivity extends AppCompatActivity {
     {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+//        formatter.setTimeZone(TimeZone.getTimeZone("GMT")); // Set to local timezone
+        formatter.setTimeZone(TimeZone.getDefault()); // Set to local timezone
+//        milliSeconds -= 13 * 3600 * 1000;
 
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
+//        calendar.setTimeZone(TimeZone.getDefault());
         return formatter.format(calendar.getTime());
     }
 }
