@@ -272,9 +272,17 @@ public class AppUsageSummary extends AppCompatActivity {
         summaryOutput.append("Name: "+app.appLabel+"\n");
         summaryOutput.append("Package: "+app.packageName+"\n");
         summaryOutput.append("TimeInstalled: "+values.networkDateRange.start+"\n");
-        summaryOutput.append("UsageDuration: "+values.usage_duration+"\n");
-        summaryOutput.append("UsageRange: "+values.usageDateRange+"\n");
-        // TODO append the other values to output (tx, rx totals etc)
+        summaryOutput.append("ActiveDuration: "+values.usage_duration+"\n");
+        summaryOutput.append("NetworkRange: "+values.usageDateRange+"\n");
+        summaryOutput.append("TotalTraffic: \n"
+                + values.totalTraffic.displayRxOutput()+"\n"
+                + values.totalTraffic.displayTxOutput());
+        summaryOutput.append("WifiTraffic: \n"
+                + values.wifiTraffic.displayRxOutput()+"\n"
+                + values.wifiTraffic.displayTxOutput());
+        summaryOutput.append("MobileTraffic: \n"
+                + values.mobileTraffic.displayRxOutput()+"\n"
+                + values.mobileTraffic.displayTxOutput());
 
         writeUsageToFile(summaryOutput, app.packageName+SUMMARY_OUTPUT);
     }
