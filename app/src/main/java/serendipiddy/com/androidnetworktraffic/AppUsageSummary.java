@@ -54,8 +54,8 @@ public class AppUsageSummary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_usage_summary);
 
-        OUTPUT_DIR = Environment.getExternalStorageDirectory().getPath()+"/";
-//        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/";
+//        OUTPUT_DIR = getExternalStorageDirectory().getPath()+"/";
+        OUTPUT_DIR = "Android/data/serendipiddy.com/"+getString(R.string.app_name)+"/";
 
         acquireAndDisplaySummary();
     }
