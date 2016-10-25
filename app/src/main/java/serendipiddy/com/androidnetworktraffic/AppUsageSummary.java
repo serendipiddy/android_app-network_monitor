@@ -41,8 +41,8 @@ public class AppUsageSummary extends AppCompatActivity {
     private ApplicationItem thisAppInfo;
     private final int TWO_HOURS_AS_MS = 3600000 * 2;
     public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-    public final String NETWORK_OUTPUT = "networkUsage";
-    public final String SUMMARY_OUTPUT = "summaryUsage";
+    public final String NETWORK_OUTPUT = ".networkUsage";
+    public final String SUMMARY_OUTPUT = ".summaryUsage";
     private AppUsageValues thisUsageValues = new AppUsageValues();
 
     public static final String headerString = "startTime endTime startTimeStamp endTimeStamp "
