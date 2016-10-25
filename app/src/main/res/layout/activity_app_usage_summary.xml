@@ -74,7 +74,7 @@
                 android:typeface="monospace"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="15/08/2016 13:15:00\n25/10/2016  8:15:00"
-                android:id="@+id/textView_datesValue"
+                android:id="@+id/textView_datesUsageValue"
                 android:layout_below="@+id/textView_datesTitle"
                 android:layout_alignStart="@+id/textView_durationValue" />
 
@@ -84,7 +84,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Network Traffic Usage"
                 android:id="@+id/textView_trafficUsageTitle"
-                android:layout_below="@+id/textView_datesValue"
+                android:layout_below="@+id/textView_datesUsageValue"
                 android:layout_alignStart="@+id/textView_datesTitle"
                 android:layout_marginTop="@dimen/para_vertical" />
 
