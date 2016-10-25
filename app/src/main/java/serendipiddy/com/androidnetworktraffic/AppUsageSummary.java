@@ -242,9 +242,9 @@ public class AppUsageSummary extends AppCompatActivity {
         // set the new values of the fields
         label.setText(app.appLabel);
         pkgName.setText(app.packageName);
-        duration.setText(values.usage_duration+"s");
-        datesUsage.setText(values.usageDateRange+"s");
-        datesNetwork.setText(values.networkDateRange+"s");
+        duration.setText(values.usage_duration+" s");
+        datesUsage.setText(values.usageDateRange.toSplitString());
+        datesNetwork.setText(values.networkDateRange.toSplitString());
         totalTraffic.setText(values.totalTraffic.displayRxOutput()+"\n"+
                 values.totalTraffic.displayTxOutput());
         wifiTraffic.setText(values.wifiTraffic.displayRxOutput()+"\n"+
@@ -271,7 +271,7 @@ public class AppUsageSummary extends AppCompatActivity {
 
         summaryOutput.append("Name: "+app.appLabel+"\n");
         summaryOutput.append("Package: "+app.packageName+"\n");
-        summaryOutput.append("TimeInstalled: "+values.networkDateRange+"\n");
+        summaryOutput.append("TimeInstalled: "+values.networkDateRange.start+"\n");
         summaryOutput.append("UsageDuration: "+values.usage_duration+"\n");
         summaryOutput.append("UsageRange: "+values.usageDateRange+"\n");
         // TODO append the other values to output (tx, rx totals etc)
@@ -339,8 +339,8 @@ public class AppUsageSummary extends AppCompatActivity {
         public long getTxMegabytes() { return rxBytes / mb; }
         public long getRxRate() { return rxPackets == 0 ? 0 : rxBytes / rxPackets; }
         public long getTxRate() { return txPackets == 0 ? 0 : txBytes / txPackets; }
-        public String displayRxOutput() { return "Rx "+rxPackets+" pkts "+getRxKilobytes()+"KB"; }
-        public String displayTxOutput() { return "Tx "+txPackets+" pkts "+getTxKilobytes()+"KB"; }
+        public String displayRxOutput() { return "Rx "+rxPackets+" pkts "+getRxKilobytes()+" KB"; }
+        public String displayTxOutput() { return "Tx "+txPackets+" pkts "+getTxKilobytes()+" KB"; }
 
     }
 
@@ -403,6 +403,11 @@ class DateRange {
     }
 
     public String toString() {
+        return getDateString(this.start,AppUsageSummary.DATE_FORMAT)
+                +" - "+getDateString(this.end,AppUsageSummary.DATE_FORMAT);
+    }
+
+    public String toSplitString() {
         return getDateString(this.start,AppUsageSummary.DATE_FORMAT)
                 +"\n"+getDateString(this.end,AppUsageSummary.DATE_FORMAT);
     }
