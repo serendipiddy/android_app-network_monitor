@@ -3,10 +3,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="serendipiddy.com.androidnetworktraffic.AppUsageSummary">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Application Label"
+                android:id="@+id/textView_appLabel"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="name.of.package"
+                android:id="@+id/textView_packageName"
+                android:layout_below="@+id/textView_appLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Active Duration"
+                android:id="@+id/textView_durationTitle"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textView_packageName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Between Dates"
+                android:id="@+id/textView_datesTitle"
+                android:layout_below="@+id/textView_durationValue"
+                android:layout_alignStart="@+id/textView_durationTitle"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="10000 seconds"
+                android:id="@+id/textView_durationValue"
+                android:layout_below="@+id/textView_durationTitle"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginStart="@dimen/para_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="15/08/2016 13:15:00\n25/10/2016 8:15:00"
+                android:id="@+id/textView_datesValue"
+                android:layout_below="@+id/textView_datesTitle"
+                android:layout_alignStart="@+id/textView_durationValue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Network Traffic Usage"
+                android:id="@+id/textView_trafficUsageTitle"
+                android:layout_below="@+id/textView_datesValue"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginTop="@dimen/para_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Between Dates"
+                android:id="@+id/textView_datesNetworkTitle"
+                android:layout_below="@+id/textView_trafficUsageTitle"
+                android:layout_alignStart="@+id/textView_trafficUsageTitle"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="15/08/2016 13:15:00\n25/10/2016 8:15:00"
+                android:id="@+id/textView9"
+                android:layout_below="@+id/textView_datesNetworkTitle"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginStart="@dimen/para_vertical" />
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

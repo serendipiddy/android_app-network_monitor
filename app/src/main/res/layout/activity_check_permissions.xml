@@ -18,8 +18,9 @@
         android:id="@+id/permissions_activity_title_box"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginTop="@dimen/para_vertical"
+        android:layout_marginBottom="@dimen/para_vertical_half"
+        android:textAlignment="center" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,11 +30,11 @@
         android:id="@+id/permissions_activity_message_box"
         android:layout_below="@+id/permissions_activity_title_box"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="@dimen/para_vertical"
+        android:layout_marginRight="@dimen/para_vertical"
+        android:layout_marginBottom="@dimen/para_vertical"
         android:textAlignment="textStart"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="@dimen/para_vertical_half" />
 
     <Button
         android:layout_width="wrap_content"
@@ -42,7 +43,7 @@
         android:id="@+id/permissions_activity_access_button"
         android:layout_below="@+id/permissions_activity_message_box"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="@dimen/para_vertical"
         android:onClick="startUsagePermissionActivity"
         android:enabled="false" />
 
