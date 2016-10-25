@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppNetworkTrafficTraffic</string>
+    <string name="app_name">App Traffic Usage</string>
     <string name="title_activity_main">App Traffic Usage</string>
     <string name="installedAppListLabel">Installed Apps</string>
 
