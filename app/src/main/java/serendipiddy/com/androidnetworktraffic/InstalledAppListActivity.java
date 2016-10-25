@@ -28,19 +28,22 @@ public class InstalledAppListActivity extends AppCompatActivity {
 
     private Map<Integer, Integer> uid_map;
     public final static String EXTRA_NAME = "androidnetworktraffic.extra.NAME";
-    public final static String EXTRA_UID = "androidnetworktraffic.extra.UID";
     public final static String EXTRA_LABEL = "androidnetworktraffic.extra.LABEL";
+    public final static String EXTRA_UID = "androidnetworktraffic.extra.UID";
+    public final static String EXTRA_INSTALL_TIME = "androidnetworktraffic.extra.INSTALL_TIME";
     private final String TAG = "InstalledAppList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_installed_app_list);
+        Toast.makeText(this, "Long press to select app", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onBackPressed() {
         // Stop going back to check permissions page
+        // TODO exit app
     }
 
     @Override
@@ -52,10 +55,13 @@ public class InstalledAppListActivity extends AppCompatActivity {
 
         uid_map = new HashMap<Integer,Integer>();
         for (ApplicationInfo ai : pinfo) {
+            // save the app info
             ApplicationItem app = new ApplicationItem( ai.packageName, (String) pm.getApplicationLabel(ai), ai.uid);
             applications.add(app);
+            // count how many times this UID was found
             if (uid_map.containsKey(ai.uid)){
                 uid_map.put(ai.uid, uid_map.get(ai.uid)+1);
+                Log.d(TAG, "More than one of this UID exists (UID:"+ai.uid+", count:"+uid_map.get(ai.uid)+" name:"+ai.packageName+")");
             }
             else {
                 uid_map.put(ai.uid,1);
@@ -71,11 +77,15 @@ public class InstalledAppListActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ApplicationItem ai = (ApplicationItem)  parent.getAdapter().getItem(position);
-                startActivity(new Intent(getBaseContext(), AppUsageSummary.class));
+                Intent intent = new Intent(getBaseContext(), AppUsageSummary.class);
+                intent.putExtra(EXTRA_NAME,ai.packageName);
+                intent.putExtra(EXTRA_LABEL,ai.appLabel);
+                intent.putExtra(EXTRA_UID,ai.uid);
+                intent.putExtra(EXTRA_INSTALL_TIME,ai.getInstallTime(getPackageManager()));
+                startActivity(intent);
                 return false;
             }
         });
-//        Toast.makeText(this, "Long press to select app", Toast.LENGTH_LONG).show();
     }
 
     /**
