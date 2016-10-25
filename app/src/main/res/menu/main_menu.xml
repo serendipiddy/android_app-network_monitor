@@ -3,7 +3,7 @@
     <item
         android:title="Save Usage"
         android:id="@+id/save_usage_button"></item>
-    <item
-        android:title="Go To Folder"
-        android:id="@+id/go_to_folder"></item>
+    <!--<item-->
+        <!--android:title="Go To Folder"-->
+        <!--android:id="@+id/go_to_folder"></item>-->
 </menu>
