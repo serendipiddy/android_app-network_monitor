@@ -38,7 +38,7 @@ public class AppUsageSummary extends AppCompatActivity {
     private String OUTPUT_DIR;
     private ApplicationItem thisAppInfo;
     private final int TWO_HOURS_AS_MS = 3600000 * 2;
-    public final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    public static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
     public final String NETWORK_OUTPUT = "networkUsage";
     public final String SUMMARY_OUTPUT = "summaryUsage";
     private AppUsageValues thisUsageValues = new AppUsageValues();
@@ -99,12 +99,14 @@ public class AppUsageSummary extends AppCompatActivity {
         // get the intent used to start activity, extracting the values needed
         thisAppInfo = getAppDetails();
 
+        Log.d(TAG, thisAppInfo.appLabel+" "+thisAppInfo.installTime);
+
         // perform the usage info extraction, populating thisUsageValues
         getUsageStats(thisAppInfo, thisUsageValues);
         getNetworkUsage(thisAppInfo, thisUsageValues, currentAppWifiResults, currentAppMobileResults);
 
         // populate the fields on screen
-        outputResultsToScreen(thisUsageValues);
+        outputResultsToScreen(thisAppInfo, thisUsageValues);
     }
 
     /**
@@ -226,8 +228,10 @@ public class AppUsageSummary extends AppCompatActivity {
      * Distplays the given values to the Activity's TextView fields
      * @param values
      */
-    private void outputResultsToScreen(AppUsageValues values) {
+    private void outputResultsToScreen(ApplicationItem app, AppUsageValues values) {
         // get all the text fields to change
+        TextView label = (TextView) findViewById(R.id.textView_appLabel);
+        TextView pkgName = (TextView) findViewById(R.id.textView_packageName);
         TextView duration = (TextView) findViewById(R.id.textView_durationValue);
         TextView datesUsage = (TextView) findViewById(R.id.textView_datesUsageValue);
         TextView datesNetwork = (TextView) findViewById(R.id.textView_datesNetworkValues);
@@ -236,6 +240,8 @@ public class AppUsageSummary extends AppCompatActivity {
         TextView mobileTraffic = (TextView) findViewById(R.id.textView_mobileNetworkTrafficValues);
 
         // set the new values of the fields
+        label.setText(app.appLabel);
+        pkgName.setText(app.packageName);
         duration.setText(values.usage_duration+"s");
         datesUsage.setText(values.usageDateRange+"s");
         datesNetwork.setText(values.networkDateRange+"s");
