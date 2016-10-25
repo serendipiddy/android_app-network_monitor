@@ -24,6 +24,10 @@ public class AppUsageSummary extends AppCompatActivity {
         OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/";
 
         // get the intent used to start activity, extracting the values needed
+
+        // perform the usage extraction
+
+        // populate the fields on screen
     }
 
     /**
