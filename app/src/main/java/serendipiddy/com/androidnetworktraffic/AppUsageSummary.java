@@ -7,6 +7,8 @@ import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.provider.Settings;
@@ -52,7 +54,8 @@ public class AppUsageSummary extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_usage_summary);
 
-        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/";
+        OUTPUT_DIR = Environment.getExternalStorageDirectory().getPath()+"/";
+//        OUTPUT_DIR = "Android/data/serendipiddy.com"+getString(R.string.app_name)+"/";
 
         acquireAndDisplaySummary();
     }
@@ -87,6 +90,11 @@ public class AppUsageSummary extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Saved usage to: " + OUTPUT_DIR + thisAppInfo.packageName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            case R.id.go_to_folder:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath());
+                intent.setData(uri);
+                startActivity(Intent.createChooser(intent, "Open Folder"));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -245,6 +253,7 @@ public class AppUsageSummary extends AppCompatActivity {
         duration.setText(values.usage_duration+" s");
         datesUsage.setText(values.usageDateRange.toSplitString());
         datesNetwork.setText(values.networkDateRange.toSplitString());
+        if (values.totalTraffic == null) return;
         totalTraffic.setText(values.totalTraffic.displayRxOutput()+"\n"+
                 values.totalTraffic.displayTxOutput());
         wifiTraffic.setText(values.wifiTraffic.displayRxOutput()+"\n"+
@@ -271,18 +280,19 @@ public class AppUsageSummary extends AppCompatActivity {
 
         summaryOutput.append("Name: "+app.appLabel+"\n");
         summaryOutput.append("Package: "+app.packageName+"\n");
-        summaryOutput.append("TimeInstalled: "+values.networkDateRange.start+"\n");
+        summaryOutput.append("TimeInstalled: "+values.networkDateRange.start.getTime()+"\n");
+        summaryOutput.append("LastAccessed: "+values.networkDateRange.end.getTime()+"\n");
         summaryOutput.append("ActiveDuration: "+values.usage_duration+"\n");
         summaryOutput.append("NetworkRange: "+values.usageDateRange+"\n");
         summaryOutput.append("TotalTraffic: \n"
                 + values.totalTraffic.displayRxOutput()+"\n"
-                + values.totalTraffic.displayTxOutput());
+                + values.totalTraffic.displayTxOutput()+"\n");
         summaryOutput.append("WifiTraffic: \n"
                 + values.wifiTraffic.displayRxOutput()+"\n"
-                + values.wifiTraffic.displayTxOutput());
+                + values.wifiTraffic.displayTxOutput()+"\n");
         summaryOutput.append("MobileTraffic: \n"
                 + values.mobileTraffic.displayRxOutput()+"\n"
-                + values.mobileTraffic.displayTxOutput());
+                + values.mobileTraffic.displayTxOutput()+"\n");
 
         writeUsageToFile(summaryOutput, app.packageName+SUMMARY_OUTPUT);
     }

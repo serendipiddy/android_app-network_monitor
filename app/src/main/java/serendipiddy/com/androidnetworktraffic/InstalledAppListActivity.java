@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +37,9 @@ public class InstalledAppListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_installed_app_list);
+        setContentView(R.layout.activity_installed_app_list_);
         Toast.makeText(this, "Long press to select app", Toast.LENGTH_LONG).show();
+
     }
 
     @Override
@@ -86,6 +88,10 @@ public class InstalledAppListActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        ProgressBar pb = (ProgressBar) findViewById(R.id.loading_apps_list_bar);
+        pb.setVisibility(View.GONE);
+
     }
 
     /**
