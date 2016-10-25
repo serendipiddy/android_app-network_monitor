@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:title="Usage Access Settings"
-        android:id="@+id/open_usage_access_button"></item>
-    <item
-        android:title="App Permission Settings"
-        android:id="@+id/open_app_settings_button"></item>
-    <item
-        android:title="Refresh Selection App"
-        android:id="@+id/refresh_current_app_button"></item>
-    <item
-        android:title="Save Current App's Usage"
+        android:title="Save Usage"
         android:id="@+id/save_usage_button"></item>
+    <item
+        android:title="Go To Folder"
+        android:id="@+id/go_to_folder"></item>
 </menu>
