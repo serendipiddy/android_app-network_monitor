@@ -115,10 +115,10 @@ public class AppUsageSummary extends AppCompatActivity {
      */
     private ApplicationItem getAppDetails() {
         Intent data = getIntent();
-        String appName = data.getStringExtra(InstalledAppList.EXTRA_NAME);
-        String appLabel = data.getStringExtra(InstalledAppList.EXTRA_LABEL);
-        long installTime = data.getLongExtra(InstalledAppList.EXTRA_INSTALL_TIME, -1);
-        int appUID = data.getIntExtra(InstalledAppList.EXTRA_UID, -1);
+        String appName = data.getStringExtra(InstalledAppListActivity.EXTRA_NAME);
+        String appLabel = data.getStringExtra(InstalledAppListActivity.EXTRA_LABEL);
+        long installTime = data.getLongExtra(InstalledAppListActivity.EXTRA_INSTALL_TIME, -1);
+        int appUID = data.getIntExtra(InstalledAppListActivity.EXTRA_UID, -1);
         Log.d(TAG, appName +" "+ appUID);
 
         return new ApplicationItem(appName,appLabel,appUID,installTime);
