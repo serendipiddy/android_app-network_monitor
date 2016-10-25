@@ -12,12 +12,21 @@ class ApplicationItem implements Comparable {
     public final String packageName;
     public final String appLabel;
     public final int uid;
+    public final long installTime;
     public final String TAG = "ApplicationItem";
 
     public ApplicationItem(String packageName, String label, int uid) {
         this.packageName = packageName;
         this.appLabel = label;
         this.uid = uid;
+        this.installTime = -1;
+    }
+
+    public ApplicationItem(String packageName, String label, int uid, long installTime) {
+        this.packageName = packageName;
+        this.appLabel = label;
+        this.uid = uid;
+        this.installTime = installTime;
     }
 
     public Drawable getIcon(PackageManager pm) {
