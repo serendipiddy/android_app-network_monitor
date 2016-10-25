@@ -60,6 +60,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:typeface="monospace"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="10000 seconds"
                 android:id="@+id/textView_durationValue"
@@ -70,8 +71,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:typeface="monospace"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="15/08/2016 13:15:00\n25/10/2016 8:15:00"
+                android:text="15/08/2016 13:15:00\n25/10/2016  8:15:00"
                 android:id="@+id/textView_datesValue"
                 android:layout_below="@+id/textView_datesTitle"
                 android:layout_alignStart="@+id/textView_durationValue" />
@@ -99,10 +101,74 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:typeface="monospace"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="15/08/2016 13:15:00\n25/10/2016 8:15:00"
-                android:id="@+id/textView9"
+                android:text="15/08/2016 13:15:00\n25/10/2016  8:15:00"
+                android:id="@+id/textView_datesNetworkValues"
                 android:layout_below="@+id/textView_datesNetworkTitle"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginStart="@dimen/para_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Total Network Usage"
+                android:id="@+id/textView_totalNetworkTrafficTitle"
+                android:layout_below="@+id/textView_datesNetworkValues"
+                android:layout_alignStart="@+id/textView_trafficUsageTitle"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:typeface="monospace"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Rx\t25000 pkts 40000 KB\nTx\t20000 pkts 20000 KB"
+                android:id="@+id/textView_totalNetworkTrafficValues"
+                android:layout_below="@+id/textView_totalNetworkTrafficTitle"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginStart="@dimen/para_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Wifi Network Usage"
+                android:id="@+id/textView_wifiNetworkTrafficTitle"
+                android:layout_below="@+id/textView_totalNetworkTrafficValues"
+                android:layout_alignStart="@+id/textView_trafficUsageTitle"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:typeface="monospace"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Rx\t25000 pkts 40000 KB\nTx\t20000 pkts 20000 KB"
+                android:id="@+id/textView_wifiNetworkTrafficValues"
+                android:layout_below="@+id/textView_wifiNetworkTrafficTitle"
+                android:layout_alignStart="@+id/textView_datesTitle"
+                android:layout_marginStart="@dimen/para_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Mobile Network Usage"
+                android:id="@+id/textView_mobileNetworkTrafficTitle"
+                android:layout_below="@+id/textView_wifiNetworkTrafficValues"
+                android:layout_alignStart="@+id/textView_trafficUsageTitle"
+                android:layout_marginTop="@dimen/para_vertical_half" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:typeface="monospace"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Rx\t25000 pkts 40000 KB\nTx\t20000 pkts 20000 KB"
+                android:id="@+id/textView_mobileNetworkTrafficValues"
+                android:layout_below="@+id/textView_mobileNetworkTrafficTitle"
                 android:layout_alignStart="@+id/textView_datesTitle"
                 android:layout_marginStart="@dimen/para_vertical" />
 
