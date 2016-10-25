@@ -90,11 +90,11 @@ public class AppUsageSummary extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Saved usage to: " + OUTPUT_DIR + thisAppInfo.packageName, Toast.LENGTH_SHORT).show();
                 }
                 return true;
-            case R.id.go_to_folder:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath());
-                intent.setData(uri);
-                startActivity(Intent.createChooser(intent, "Open Folder"));
+//            case R.id.go_to_folder:
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath());
+//                intent.setData(uri);
+//                startActivity(Intent.createChooser(intent, "Open Folder"));
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -251,7 +251,9 @@ public class AppUsageSummary extends AppCompatActivity {
         label.setText(app.appLabel);
         pkgName.setText(app.packageName);
         duration.setText(values.usage_duration+" s");
+        if (values.usageDateRange == null) return;
         datesUsage.setText(values.usageDateRange.toSplitString());
+        if (values.networkDateRange == null) return;
         datesNetwork.setText(values.networkDateRange.toSplitString());
         if (values.totalTraffic == null) return;
         totalTraffic.setText(values.totalTraffic.displayRxOutput()+"\n"+
@@ -280,19 +282,23 @@ public class AppUsageSummary extends AppCompatActivity {
 
         summaryOutput.append("Name: "+app.appLabel+"\n");
         summaryOutput.append("Package: "+app.packageName+"\n");
-        summaryOutput.append("TimeInstalled: "+values.networkDateRange.start.getTime()+"\n");
-        summaryOutput.append("LastAccessed: "+values.networkDateRange.end.getTime()+"\n");
+        if (values.networkDateRange != null) {
+            summaryOutput.append("TimeInstalled: " + values.networkDateRange.start.getTime() + "\n");
+            summaryOutput.append("LastAccessed: " + values.networkDateRange.end.getTime() + "\n");
+        }
         summaryOutput.append("ActiveDuration: "+values.usage_duration+"\n");
         summaryOutput.append("NetworkRange: "+values.usageDateRange+"\n");
-        summaryOutput.append("TotalTraffic: \n"
-                + values.totalTraffic.displayRxOutput()+"\n"
-                + values.totalTraffic.displayTxOutput()+"\n");
-        summaryOutput.append("WifiTraffic: \n"
-                + values.wifiTraffic.displayRxOutput()+"\n"
-                + values.wifiTraffic.displayTxOutput()+"\n");
-        summaryOutput.append("MobileTraffic: \n"
-                + values.mobileTraffic.displayRxOutput()+"\n"
-                + values.mobileTraffic.displayTxOutput()+"\n");
+        if (values.totalTraffic != null) {
+            summaryOutput.append("TotalTraffic: \n"
+                    + values.totalTraffic.displayRxOutput() + "\n"
+                    + values.totalTraffic.displayTxOutput() + "\n");
+            summaryOutput.append("WifiTraffic: \n"
+                    + values.wifiTraffic.displayRxOutput() + "\n"
+                    + values.wifiTraffic.displayTxOutput() + "\n");
+            summaryOutput.append("MobileTraffic: \n"
+                    + values.mobileTraffic.displayRxOutput() + "\n"
+                    + values.mobileTraffic.displayTxOutput() + "\n");
+        }
 
         writeUsageToFile(summaryOutput, app.packageName+SUMMARY_OUTPUT);
     }
@@ -366,7 +372,7 @@ public class AppUsageSummary extends AppCompatActivity {
      * Holds the usage results for this application
      */
     class AppUsageValues {
-        public Double usage_duration = -1.0;
+        public Double usage_duration = 0.0;
         public DateRange usageDateRange = null;
         public DateRange networkDateRange = null;
         public TrafficTotals totalTraffic = null;
