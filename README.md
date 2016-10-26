@@ -32,4 +32,4 @@ This is suitable if greater granularity or which access to Link Layer (Layer 2) 
 ### TrafficStats
 This solution was initially explored, recording real-time usage with a background service. This reads an integer value for packets and bytes, separate Rx and Tx directions, which can be queried periodically to see usage over time.
 
-Permissions were a problem, as not all phone models allowed open access to the android.net.TrafficStats information. However, which accessible, it did provide control over the granularity of the samples (down to the millisecond..!).
+Permissions were a problem, as not all phone models allowed open access to the android.net.TrafficStats information. However, when accessible, it provides control over the granularity of the samples (down to the millisecond..!).
